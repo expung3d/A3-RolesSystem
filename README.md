@@ -65,7 +65,7 @@ Ground Commanders can be manually assigned or voted in by the Zeus. The Zeus wil
 
 ## Usage Instructions
 
-Subscribe to this workshop item or download the script manually from the GitHub Releases and create a custom composition with the code in the init.  
+Subscribe to this workshop item or download the script manually from the [GitHub Releases](https://github.com/expung3d/A3-RolesSystem/releases) and create a custom composition with the code in the init.  
   
 Once you have done that, join a server that has scripting enabled as a Zeus and place the composition down.  
 
