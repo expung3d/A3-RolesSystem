@@ -1,31 +1,18 @@
 # Roles System Equipment Configuration Tutorial
 
 ## General Information
-When creating a new equipment configuration you MUST create role setups for each of these roles:
+When creating a new equipment configuration you **MUST** create role setups for each of these roles:
 ```sqf
-'Recruit', 
-'Rifleman', 
-'Medic', 
-'Crewman', 
-'Heli Pilot', 
-'Pilot', 
-'Squad Leader', 
-'Autorifleman', 
-'Light Anti-Tank', 
-'Marksman', 
-'Grenadier', 
-'Heavy Gunner', 
-'Heavy Anti-Tank', 
-'Sniper'
+'Recruit', 'Rifleman', 'Medic', 'Crewman', 'Heli Pilot', 'Pilot', 
+'Squad Leader', 'Autorifleman', 'Light Anti-Tank', 'Marksman', 'Grenadier', 
+'Heavy Gunner', 'Heavy Anti-Tank', 'Sniper'
 ```
-If you don't create one for a role they will have nothing available in their arsenal and will be able to pickup ANY items.
+If you don't create one for a role they will have nothing available in their arsenal and will be able to pickup **ANY** items. Role names are CaSe-SeNsItIvE. Make sure you spell them correctly.
 
 ## Function Information
 
-## MAZ_RS_fnc_createNewDefaultSideUniform
-The purpose of this function is primarily to reduce the workload on the config creator.<br/>
-These defaults can be ignored in individual roles.<br/>
-Calling this creates the following default items for the faction on the specified map:
+### MAZ_RS_fnc_createNewDefaultSideUniform
+The purpose of this function is primarily to reduce the workload on the config creator.<br/>These defaults can be ignored in individual roles. For example, the default equipment you will likely want to give to riflemen and medics, but not crewmen or pilots.<br/>Calling this creates the following default items for the faction on the specified map:
 ```sqf
 - Uniforms
 - Vests
@@ -34,7 +21,7 @@ Calling this creates the following default items for the faction on the specifie
 - Goggles
 ```
 
-### Format:
+#### Format:
 ```sqf
 [
 	Side, (west, east, independent)
@@ -47,11 +34,12 @@ Calling this creates the following default items for the faction on the specifie
 ] call MAZ_RS_fnc_createNewDefaultSideUniform;
 ```
 
-## MAZ_RS_fnc_createNewEquipmentForRole
-Calling this creates the role equipment for the specific role.<br/>
-This includes the weapons, attachments, additional uniform items, additional items (LaserDesignator, Rangefinder, Medikit, Toolkit).
+<hr>
 
-### Format:
+### MAZ_RS_fnc_createNewEquipmentForRole
+Calling this creates the role equipment for the specific role.<br/>This includes the weapons, attachments, additional uniform items, additional items (LaserDesignator, Rangefinder, Medikit, Toolkit).<br/>This is the most important part of the config. Make sure you take your time when creating this.
+
+#### Format:
 ```sqf
 [
 	Side, (west, east, independent)
@@ -80,14 +68,15 @@ This includes the weapons, attachments, additional uniform items, additional ite
 	[Extra Items Array], (Any extra item class names available to this specific role)
 	Use Default Uniforms? (TRUE / FALSE. 
 						   	Whether to include the default uniform defined in MAZ_fnc_createNewDefaultSideUniform. 
-					       	If not they will only have what is defined in above.
+					       	If not they will only have what is defined in above arrays.
 					      )
 ] call MAZ_RS_fnc_createNewEquipmentForRole;
 ```
 
 ## Examples of Function Calls
+For more examples, look at the default configs created by Z.A.M. These are designed to be very close to the vanilla factions' equipment.
 
-## MAZ_RS_fnc_createNewDefaultSideUniform
+### MAZ_RS_fnc_createNewDefaultSideUniform
 ```sqf
 [
 	west,
@@ -110,7 +99,7 @@ This includes the weapons, attachments, additional uniform items, additional ite
 ] call MAZ_RS_fnc_createNewDefaultSideUniform;
 ```
 
-## MAZ_RS_fnc_createNewEquipmentForRole
+### MAZ_RS_fnc_createNewEquipmentForRole
 ```sqf
 [
 	west,
