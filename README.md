@@ -15,7 +15,7 @@
 </p>
 
 # Roles System - Designed for Public Zeus
-**Z.A.M.'s Roles System (RS)** was designed to incentivize teamplay and coordination between those in groups. You will be (practically) forced to join a group with others as if you are alone in your group you will be forced as a ‘Recruit’ role which has poor weaponry, no access to the arsenal, and limited ammo. You can change your role by joining a group with at least one other person and pressing **Ctrl + 8**.
+**Z.A.M.'s Roles System (RS)** was designed to incentivize teamplay and coordination between those in groups. You will be (practically) forced to join a group with others, since if you are alone in your group you will be forced as a ‘Recruit’ role. Of which has poor weaponry, no access to the arsenal, and limited ammo. You can change your role by joining a group with at least one other person and pressing **Ctrl + 8**.
 
 ## Joining Filter
 
