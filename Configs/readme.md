@@ -67,8 +67,8 @@ Calling this creates the role equipment for the specific role.<br/>This includes
 	[Goggles Array], (Any goggle class names available to this specific role)
 	[Extra Items Array], (Any extra item class names available to this specific role)
 	Use Default Uniforms? (TRUE / FALSE. 
-						Whether to include the default uniform defined in MAZ_fnc_createNewDefaultSideUniform. 
-					       	If not they will only have what is defined in above arrays.
+					Whether to include the default uniform defined in MAZ_fnc_createNewDefaultSideUniform. 
+					If not they will only have what is defined in above arrays.
 				)
 ] call MAZ_RS_fnc_createNewEquipmentForRole;
 ```
