@@ -1,3 +1,19 @@
+<p align="center">
+    <img src="https://imgur.com/exBY8ku.png" width="500">
+</p>
+
+<p align="center">
+    <a href="https://github.com/expung3d/A3-RolesSystem/releases">
+        <img src="https://img.shields.io/github/v/release/expung3d/A3-RolesSystem?label=Version" alt="Latest Version" />
+    </a>
+    <a href="https://github.com/expung3d/A3-RolesSystem/issues">
+        <img src="https://img.shields.io/github/issues-raw/expung3d/A3-RolesSystem?label=Issues" alt="Issues" />
+    </a>
+    <a href="https://discord.gg/W4ew5HP">
+        <img src="https://img.shields.io/discord/700228330959536190?color=7683D5&label=Discord&logo=What" alt="ZAM Discord" />
+    </a>
+</p>
+
 # Roles System - Designed for Public Zeus
 **Z.A.M.'s Roles System (RS)** was designed to incentivize teamplay and coordination between those in groups. You will be (practically) forced to join a group with others as if you are alone in your group you will be forced as a ‘Recruit’ role which has poor weaponry, no access to the arsenal, and limited ammo. You can change your role by joining a group with at least one other person and pressing **Ctrl + 8**.
 
