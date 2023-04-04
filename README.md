@@ -68,7 +68,10 @@ Ground Commanders can be manually assigned or voted in by the Zeus. The Zeus wil
 Subscribe to this workshop item or download the script manually from the GitHub Releases and create a custom composition with the code in the init.  
   
 Once you have done that, join a server that has scripting enabled as a Zeus and place the composition down.  
-  
+
+### Usage Instructions: Modifying Your Config
+
+Configs are the heart of the Roles System, they are what define what items specific roles can and can't have. To modify your config, head to the [Configs folder](https://github.com/expung3d/A3-RolesSystem/tree/main/Configs) on the GitHub. You will find a detailed explanation of how to use the appropriate functions. However, modifying configs is a tedious and manual process, if you want it done right. Ensure that you save your configs for use in future updates of the Roles System.
 
 ### Official Servers with Scripts Enabled
 
