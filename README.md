@@ -84,3 +84,7 @@ Once you have done that, join a server that has scripting enabled as a Zeus and 
 ## License Information
 
 The source code of the Roles System is defined by the EULA found within our GitHub repository. For more information please refer yourself to it. If you have further questions don’t hesitate to reach out.
+
+## Bug Reports and Suggestions
+
+We appreciate all the feedback we get. If you have an idea or a frustrating issue, please let us know through the [issues page](https://github.com/expung3d/A3-RolesSystem/issues) on our GitHub. When creating a bug report or suggestion, please ensure that you are not creating a duplicate. If an issue is already open with similar or the same information, bump it.
