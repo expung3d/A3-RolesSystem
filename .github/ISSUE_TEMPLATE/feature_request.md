@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this script.
 title: "[FEATURE] - "
-labels: enhancement
+labels: suggestion
 assignees: ''
 
 ---
