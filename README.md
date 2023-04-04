@@ -1,6 +1,10 @@
 # Roles System - Designed for Public Zeus
 **Z.A.M.'s Roles System (RS)** was designed to incentivize teamplay and coordination between those in groups. You will be (practically) forced to join a group with others as if you are alone in your group you will be forced as a ‘Recruit’ role which has poor weaponry, no access to the arsenal, and limited ammo. You can change your role by joining a group with at least one other person and pressing **Ctrl + 8**.
 
+## Joining Filter
+
+Since this system is designed for Public Zeus, a filter had to be created. Many players will not understand the system without it or will not be the correct players for this system. Upon joining a server that has the roles system running, you will be stuck in the map screen and you cannot exit it. To exit the map, go to the tab "[R.S.] - System Info" and read the information there. Then, at the bottom, select "I Understand" to begin playing or "I Wish to Leave" to leave the server.
+
 ## Roles Breakdown
 
 Roles are broken down into categories of specialness: **basic, specialist, and support**. Specialist and support roles are limited, because of this you and your squad should choose wisely which roles are selected and when.  
