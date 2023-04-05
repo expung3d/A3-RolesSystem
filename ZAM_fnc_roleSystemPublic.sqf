@@ -1,3 +1,5 @@
+if (missionNamespace getVariable ["MAZ_RS_enabled",false]) exitWith {["The Roles System is already running!","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;};
+
 private _varName = "MAZ_System_RolesSystem";
 private _myJIPCode = "MAZ_RolesSystem_JIP";
 
@@ -741,7 +743,7 @@ private _value = (str {
 				"Autorifleman",
 				[
 					[
-						["arifle_MX_SW_F","arifle_MX_SW_Black_F","LMG_03_Vehicle_F","arifle_SPAR_02_blk_F","arifle_SPAR_02_snd_F"],
+						["arifle_MX_SW_F","arifle_MX_SW_Black_F","LMG_03_F","arifle_SPAR_02_blk_F","arifle_SPAR_02_snd_F"],
 						["100Rnd_65x39_caseless_mag","100Rnd_65x39_caseless_black_mag","100Rnd_65x39_caseless_mag_Tracer","100Rnd_65x39_caseless_black_mag_tracer","150Rnd_556x45_Drum_Mag_F","150Rnd_556x45_Drum_Sand_Mag_F","200Rnd_556x45_Box_F","200Rnd_556x45_Box_Tracer_F"]
 					],
 					[
