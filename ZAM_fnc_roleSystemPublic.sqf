@@ -7,7 +7,7 @@ publicVariable 'MAZ_RS_enabled';
 MAZ_RS_DebugMode = false;
 publicVariable "MAZ_RS_DebugMode";
 
-MAZ_RS_Version = "1.3.2";
+MAZ_RS_Version = "1.3.3";
 publicVariable "MAZ_RS_Version";
 
 MAZ_RS_GroundCommanders = ["","",""];
@@ -303,7 +303,7 @@ private _value = (str {
 			waitUntil {uisleep 0.1;!isNull (findDisplay 46) && alive player};
 			sleep 0.1;
 			[] spawn MAZ_fnc_KeybindSystemInit;
-			["Keybinds Menu","Edit the in-game keybinds.",11,{[] call MAZ_fnc_modifyKeybindsInterface;},false,true] call MAZ_fnc_newKeybind;
+			MAZ_Key_MainKey = ["Keybinds Menu","Edit the in-game keybinds.",11,{[] call MAZ_fnc_modifyKeybindsInterface;},false,true] call MAZ_fnc_newKeybind;
 		};
 	};
 	call MAZ_fnc_keybindCarrier;
@@ -3024,6 +3024,7 @@ private _value = (str {
 				player setVariable ["MAZ_RS_newRoleRespawn","Rifleman",true];
 			};
 		};
+		call MAZ_RS_fnc_checkEquipmentArsenalClosed;
 	};
 
 	MAZ_RS_fnc_handleFirstAidKits = {
@@ -3208,7 +3209,6 @@ private _value = (str {
 		_var = missionNamespace getVariable _variableNameWeapons;
 		_var pushBack "";
 		if(!((primaryWeapon player) in _var)) then {
-			systemChat (primaryWeapon player);
 			player removeWeaponGlobal (primaryWeapon player);
 			_wereItemsRemoved = true;
 		};
@@ -3786,7 +3786,7 @@ private _value = (str {
 			};
 		}forEach _weaponsInContainer;
 
-		systemChat format ["Weapon Found: %1",_weaponInContainer];
+		comment 'systemChat format ["Weapon Found: %1",_weaponInContainer]';
 
 		comment "If there is take it, otherwise drop yours.";
 		if(_weaponInContainer == "") then {
@@ -3852,9 +3852,9 @@ private _value = (str {
 			TeamMapEvent = (findDisplay 12 displayCtrl 51) ctrlAddEventHandler ["Draw", 
 			{
 				_vehicleList = [];
-				{ 
-					if((side group _x) isEqualTo (side group player)) then
-					{
+				{
+					if (!isPlayer _x && !alive _x) then {continue;};
+					if((side group _x) isEqualTo (side group player)) then {
 						_pos = _x modelToWorldVisual [0,0,0];
 						_unit = driver vehicle _x;
 						_dir = 0;
@@ -4829,7 +4829,7 @@ private _value = (str {
 			[ missionNamespace, "arsenalClosed", MAZ_RS_SEH_ArsenalClosed_CheckGear] call BIS_fnc_removeScriptedEventHandler; 
 		};
 		MAZ_RS_SEH_ArsenalClosed_CheckGear = [missionNamespace, "arsenalClosed", {
-			[] call MAZ_RS_fnc_checkEquipmentArsenalClosed;
+			call MAZ_RS_fnc_checkEquipmentArsenalClosed;
 		}] call BIS_fnc_addScriptedEventHandler;
 	};
 
@@ -4915,7 +4915,6 @@ private _value = (str {
 	};
 
 	MAZ_RS_fnc_addModuleTreeTracker = {
-		uiSleep 0.1;
 		if(!isNil "MAZ_RS_CEH_TreeSelChanged_rolesModulePath") then {
 			(findDisplay 312) displayCtrl 280 ctrlRemoveEventhandler ["TreeSelChanged",MAZ_RS_CEH_TreeSelChanged_rolesModulePath];
 		};
@@ -5025,7 +5024,7 @@ private _value = (str {
 		params ["_entity"];
 		if(isNull _entity || !((typeOf _entity) isKindOf "Man")) exitWith {["Unit is not suitable.","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;};
 		if !(isPlayer _entity) exitWith {["Unit must be a player.","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;};
-		[_entity, side (group _entity)] call MAZ_RS_fnc_addCommander;
+		[_entity, side (group _entity)] spawn MAZ_RS_fnc_addCommander;
 		[format ["%1 has been made to the Commander of his side!",name _entity],"addItemOk"] call MAZ_RS_fnc_roleSystemMessage;
 	};
 
