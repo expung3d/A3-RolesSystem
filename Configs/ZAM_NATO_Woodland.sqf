@@ -231,8 +231,8 @@ comment "NATO Livonia Roles";
 		"Autorifleman",
 		[
 			[
-				["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
-				["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer"]
+				["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F","LMG_03_F"],
+				["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer","150Rnd_556x45_Drum_Mag_F","150Rnd_556x45_Drum_Sand_Mag_F"]
 			],
 			[
 				[],
