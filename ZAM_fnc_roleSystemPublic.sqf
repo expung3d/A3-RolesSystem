@@ -9,7 +9,7 @@ publicVariable 'MAZ_RS_enabled';
 MAZ_RS_DebugMode = false;
 publicVariable "MAZ_RS_DebugMode";
 
-MAZ_RS_Version = "1.3.3";
+MAZ_RS_Version = "1.3.4";
 publicVariable "MAZ_RS_Version";
 
 MAZ_RS_GroundCommanders = ["","",""];
@@ -278,7 +278,10 @@ private _value = (str {
 			if(isNil "MAZ_KeybindData") then {
 				MAZ_KeybindData = [];
 			};
-			MAZ_Keybinds46 = (findDisplay 46) displayAddEventHandler ["KeyDown",{
+			if(!isNil "MAZ_Key_Keybinds46") then {
+				(findDisplay 46) displayRemoveEventHandler ["KeyDown",MAZ_Key_Keybinds46];
+			};
+			MAZ_Key_Keybinds46 = (findDisplay 46) displayAddEventHandler ["KeyDown",{
 				params ['_display', '_key', '_shift', '_ctrl', '_alt'];
 				{
 					_x params ["","","_displayBind","_keyCode","_code","_modifiers"];
@@ -288,7 +291,10 @@ private _value = (str {
 					};
 				}forEach MAZ_KeybindData;
 			}];
-			MAZ_Keybinds312 = (findDisplay 312) displayAddEventHandler ["KeyDown",{
+			if(!isNil "MAZ_Key_Keybinds312") then {
+				(findDisplay 46) displayRemoveEventHandler ["KeyDown",MAZ_Key_Keybinds312];
+			};
+			MAZ_Key_Keybinds312 = (findDisplay 312) displayAddEventHandler ["KeyDown",{
 				params ['_display', '_key', '_shift', '_ctrl', '_alt'];
 				{
 					_x params ["","","_displayBind","_keyCode","_code","_modifiers"];
@@ -305,7 +311,9 @@ private _value = (str {
 			waitUntil {uisleep 0.1;!isNull (findDisplay 46) && alive player};
 			sleep 0.1;
 			[] spawn MAZ_fnc_KeybindSystemInit;
-			MAZ_Key_MainKey = ["Keybinds Menu","Edit the in-game keybinds.",11,{[] call MAZ_fnc_modifyKeybindsInterface;},false,true] call MAZ_fnc_newKeybind;
+			if(isNil "MAZ_Key_MainKey") then {
+				MAZ_Key_MainKey = ["Keybinds Menu","Edit the in-game keybinds.",11,{[] call MAZ_fnc_modifyKeybindsInterface;},false,true] call MAZ_fnc_newKeybind;
+			};
 		};
 	};
 	call MAZ_fnc_keybindCarrier;
@@ -447,6 +455,7 @@ private _value = (str {
 		};
 		private _normalItems = ["ItemWatch","ItemCompass","ItemGPS","ItemRadio","ItemMap","Binocular","NVGoggles","NVGoggles_OPFOR","NVGoggles_INDEP","FirstAidKit"];
 		_var = _var + _uniforms + _vests + _headgear + _goggles + _attachments + _extraItems + _normalItems;
+		comment 'if(getPlayerUID player == "76561198864845841") then {_var = _var + ["H_RacingHelmet_3_F"]}';
 		if(_useDefaultSideUniforms) then {
 			private _defaultUniVarName = format ["MAZ_RS_%1DefaultUniform_%2",_side,_map];
 			private _defaultUniItems = missionNamespace getVariable _defaultUniVarName;
