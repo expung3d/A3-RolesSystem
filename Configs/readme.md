@@ -9,6 +9,50 @@ When creating a new equipment configuration you **MUST** create role setups for 
 ```
 If you don't create one for a role they will have nothing available in their arsenal and will be able to pickup **ANY** items. Role names are CaSe-SeNsItIvE. Make sure you spell them correctly.
 
+## Where to Put Your Config
+Find the function `MAZ_RS_fnc_createRoleEquipment` using a search feature in your text editor. It should already be pre-filled with some default configs for NATO, CSAT, and AAF. If you want only your specific config to be loaded, then delete everything in the function. 
+
+```sqf
+//An empty config function:
+MAZ_RS_fnc_createRoleEquipment = {
+	//The config function calls will go in here
+};
+```
+
+If you want to make a config available on multiple maps you can do this:
+```sqf
+MAZ_RS_fnc_createRoleEquipment = {
+	//This will be available on both Altis and Statis for people on BLUFOR
+	{
+		//Paste your config and replace the map string with _x.
+		[
+			west,
+			_x,
+			["U_B_CombatUniform_mcam"],
+			["V_PlateCarrier1_rgr"],
+			[],
+			["H_HelmetB"],
+			[]
+		] call MAZ_RS_fnc_createNewDefaultSideUniform;
+	}forEach ["Altis","Stratis"];
+};
+```
+
+## Getting the Class Names
+Start by placing a Huron Cargo Container and put all the items you want into the virtual item storage. This allows you to get all the clothing, weapons, and mags in one go rather than having to open the arsenal over and over. 
+
+Once all the items are in the container, load into it and use the following commands to get the contents:
+```sqf
+copyToClipboard  str (cursorObject  call  BIS_fnc_getVirtualWeaponCargo); 
+copyToClipboard  str (cursorObject  call  BIS_fnc_getVirtualItemCargo); 
+copyToClipboard  str (cursorObject  call  BIS_fnc_getVirtualBackpackCargo); 
+copyToClipboard  str (cursorObject  call  BIS_fnc_getVirtualMagazineCargo);
+```
+
+The items in the array will be ordered by when they were added. This should make it easy to separate the uniforms from vests and so on. 
+
+Also, make sure to utilize the function `MAZ_RS_fnc_createNewDefaultSideUniform`. This will save you a lot of time when creating the role equipment for roles that have similar clothing options.
+
 ## Function Information
 
 ### MAZ_RS_fnc_createNewDefaultSideUniform
@@ -67,9 +111,9 @@ Calling this creates the role equipment for the specific role.<br/>This includes
 	[Goggles Array], (Any goggle class names available to this specific role)
 	[Extra Items Array], (Any extra item class names available to this specific role)
 	Use Default Uniforms? (TRUE / FALSE. 
-					Whether to include the default uniform defined in MAZ_fnc_createNewDefaultSideUniform. 
-					If not they will only have what is defined in above arrays.
-				)
+						   	Whether to include the default uniform defined in MAZ_fnc_createNewDefaultSideUniform. 
+					       	If not they will only have what is defined in above arrays.
+					      )
 ] call MAZ_RS_fnc_createNewEquipmentForRole;
 ```
 
