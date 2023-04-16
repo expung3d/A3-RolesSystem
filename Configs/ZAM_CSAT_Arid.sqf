@@ -2,7 +2,7 @@ comment "
 	Author: ZAM
 	Faction: CSAT Arid
 	Maps: Altis, Stratis
-	Version: 1.0
+	Version: 1.1
 ";
 
 comment "Default CSAT Uniforms";
@@ -105,6 +105,36 @@ comment "Default CSAT Roles";
 		[],
 		[],
 		["Medikit"],
+		true
+	] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+	comment "CSAT Engineer";
+	[
+		east,
+		_x,
+		"Engineer",
+		[
+			[
+				["arifle_Katiba_F","arifle_Katiba_C_F","arifle_CTAR_blk_F","arifle_CTAR_hex_F"],
+				["30Rnd_580x42_Mag_F","30Rnd_580x42_Mag_Tracer_F","30Rnd_65x39_caseless_green","30Rnd_65x39_caseless_green_mag_Tracer",
+				"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"]
+			],
+			[
+				[],
+				[]
+			],
+			[
+				["hgun_Pistol_heavy_02_F","hgun_Rook40_F","hgun_Pistol_01_F"],
+				["16Rnd_9x21_green_Mag","6Rnd_45ACP_Cylinder","10Rnd_9x21_Mag"]
+			],
+			["optic_Aco","optic_ACO_grn","acc_pointer_IR","optic_Holosight_blk_F","acc_flashlight","acc_flashlight_smg_01","optic_Holosight"]
+		],
+		[],
+		[],
+		["B_FieldPack_ocamo"],
+		[],
+		[],
+		["Toolkit","MineDetector"],
 		true
 	] call MAZ_RS_fnc_createNewEquipmentForRole;
 

@@ -9,7 +9,7 @@ publicVariable 'MAZ_RS_enabled';
 MAZ_RS_DebugMode = true;
 publicVariable "MAZ_RS_DebugMode";
 
-MAZ_RS_Version = "1.4.0";
+MAZ_RS_Version = "1.4.1";
 publicVariable "MAZ_RS_Version";
 
 MAZ_RS_GroundCommanders = ["","",""];
@@ -642,10 +642,8 @@ private _value = (str {
 				[
 					[
 						["arifle_MX_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F","arifle_SPAR_01_snd_F"],
-						[
-							"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Sand","30Rnd_556x45_Stanag_Sand_Tracer_Red","30Rnd_65x39_caseless_mag","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_mag_Tracer","30Rnd_65x39_caseless_black_mag_Tracer",
-							"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"
-						]
+						["30Rnd_556x45_Stanag","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Sand","30Rnd_556x45_Stanag_Sand_Tracer_Red","30Rnd_65x39_caseless_mag","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_mag_Tracer","30Rnd_65x39_caseless_black_mag_Tracer",
+						"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"]
 					],
 					[
 						[],
@@ -662,7 +660,7 @@ private _value = (str {
 				["B_Kitbag_rgr"],
 				[],
 				[],
-				["ToolKit","MineDetector"],
+				["Toolkit","MineDetector"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -996,7 +994,7 @@ private _value = (str {
 				["V_HarnessO_brn","V_HarnessO_gry","V_Chestrig_khk","V_BandollierB_cbr","V_TacChestrig_cbr_F","V_Chestrig_blk","V_TacVest_blk","V_BandollierB_blk"],
 				["B_AssaultPack_ocamo"],	
 				["H_HelmetSpecO_blk","H_HelmetSpecO_ocamo","H_Bandanna_cbr","H_Bandanna_gry","H_Booniehat_khk_hs","H_Cap_brn_SPECOPS","H_HelmetO_ocamo","H_HelmetO_oucamo"],
-				["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_02_sand_F"]
+				["G_Lowprofile","G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_02_sand_F"]
 			] call MAZ_RS_fnc_createNewDefaultSideUniform;
 		}forEach ["Altis","Stratis"];
 
@@ -1089,6 +1087,36 @@ private _value = (str {
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
+			comment "CSAT Engineer";
+			[
+				east,
+				_x,
+				"Engineer",
+				[
+					[
+						["arifle_Katiba_F","arifle_Katiba_C_F","arifle_CTAR_blk_F","arifle_CTAR_hex_F"],
+						["30Rnd_580x42_Mag_F","30Rnd_580x42_Mag_Tracer_F","30Rnd_65x39_caseless_green","30Rnd_65x39_caseless_green_mag_Tracer",
+						"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_Pistol_heavy_02_F","hgun_Rook40_F","hgun_Pistol_01_F"],
+						["16Rnd_9x21_green_Mag","6Rnd_45ACP_Cylinder","10Rnd_9x21_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_pointer_IR","optic_Holosight_blk_F","acc_flashlight","acc_flashlight_smg_01","optic_Holosight"]
+				],
+				[],
+				[],
+				["B_FieldPack_ocamo"],
+				[],
+				[],
+				["Toolkit","MineDetector"],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
 			comment "CSAT Crewman";
 			[
 				east,
@@ -1114,7 +1142,7 @@ private _value = (str {
 				["B_AssaultPack_ocamo"],
 				["H_HelmetCrew_O","H_Tank_black_F"],
 				["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_02_sand_F"],
-				["ToolKit"],
+				["Toolkit"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1143,7 +1171,7 @@ private _value = (str {
 				["B_Parachute","B_AssaultPack_ocamo"],
 				["H_PilotHelmetHeli_O","H_CrewHelmetHeli_O"],
 				[],
-				["ToolKit"],
+				["Toolkit"],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1399,13 +1427,13 @@ private _value = (str {
 					],
 					["acc_pointer_IR","optic_NVS","optic_LRPS","optic_AMS","optic_KHS_blk","bipod_02_F_blk","bipod_02_F_hex","muzzle_snds_L"]
 				],
-				["U_O_GhillieSuit","U_O_FullGhillie_lsh","U_O_FullGhillie_sard","U_O_FullGhillie_ard"],
-				["V_Chestrig_khk","V_Chestrig_rgr"],
 				[],
 				[],
-				["G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan"],
+				[],
+				[],
+				[],
 				["Rangefinder"],
-				false
+				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 		}forEach ["Altis","Stratis"];
 
@@ -1414,21 +1442,11 @@ private _value = (str {
 			[
 				independent,
 				_x,
-				[
-					"U_I_CombatUniform","U_I_CombatUniform_shortsleeve","U_BG_independentilla1_2_F"
-				],
-				[
-					"V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"
-				],
-				[
-					"B_AssaultPack_dgtl"
-				],	
-				[
-					"H_Booniehat_oli","H_Booniehat_dgtl","H_HelmetIA","H_Cap_headphones","H_Cap_grn","H_Cap_blk_Raven","H_Bandanna_khk","H_Bandanna_khk_hs","H_Bandanna_sgg","H_Watchcap_blk","H_Watchcap_camo","H_Booniehat_mgrn"
-				],
-				[
-					"G_Lowprofile","G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"
-				]
+				["U_I_CombatUniform","U_I_CombatUniform_shortsleeve","U_BG_independentilla1_2_F"],
+				["V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"],
+				["B_AssaultPack_dgtl"],	
+				["H_Booniehat_oli","H_Booniehat_dgtl","H_HelmetIA","H_Cap_headphones","H_Cap_grn","H_Cap_blk_Raven","H_Bandanna_khk","H_Bandanna_khk_hs","H_Bandanna_sgg","H_Watchcap_blk","H_Watchcap_camo","H_Booniehat_mgrn"],
+				["G_Lowprofile","G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"]
 			] call MAZ_RS_fnc_createNewDefaultSideUniform;
 		} forEach ["Altis","Stratis"];
 
@@ -1441,28 +1459,18 @@ private _value = (str {
 				"Recruit",
 				[
 					[
-						[
-							"arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"
-						],
-						[
-							"30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"
-						]
+						["arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"],
+						["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"
-					]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
 				[],
 				[],
@@ -1480,33 +1488,21 @@ private _value = (str {
 				"Rifleman",
 				[
 					[
-						[
-							"arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"
-						],
-						[
-							"30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"
-						]
+						["arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"],
+						["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"
-					]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
 				[],
-				[
-					"V_PlateCarrierIA2_dgtl"
-				],
+				["V_PlateCarrierIA2_dgtl"],
 				[],
 				[],
 				[],
@@ -1521,47 +1517,55 @@ private _value = (str {
 				"Medic",
 				[
 					[
-						[
-							"arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"
-						],
-						[
-							"30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"
-						]
+						["arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"],
+						["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","Medikit"]
+				],
+				[],
+				["V_PlateCarrierIA2_dgtl"],
+				["B_TacticalPack_oli","B_Kitbag_rgr"],
+				[],
+				[],
+				[],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "AAF Engineer";
+			[
+				independent,
+				_x,
+				"Engineer",
+				[
+					[
+						["arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"],
+						["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow",
+						"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"]
 					],
 					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","Medikit"
-					]
+						[],
+						[]
+					],
+					[
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
-				[
-					
-				],
-				[
-					"V_PlateCarrierIA2_dgtl"
-				],
-				[
-					"B_TacticalPack_oli","B_Kitbag_rgr"
-				],
-				[
-					
-				],
-				[
-					
-				],
-				[
-
-				],
+				[],
+				["V_PlateCarrierIA2_dgtl"],
+				["B_TacticalPack_oli","B_Kitbag_rgr"],
+				[],
+				[],
+				["Toolkit","MineDetector"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1572,51 +1576,25 @@ private _value = (str {
 				"Crewman",
 				[
 					[
-						[
-							"arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"
-						],
-						[
-							"30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"
-						]
+						["arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"],
+						["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"]
 					],
 					[
-						[
-
-						],
-						[
-							
-						]
+						[],
+						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"
-					]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"]
 				],
-				[
-					"U_Tank_green_F"
-				],
-				[
-					"V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"
-				],
-				[
-					"B_AssaultPack_dgtl"	
-				],
-				[
-					"H_HelmetCrew_I"
-				],
-				[
-					"G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"
-				],
-				[
-					"ToolKit"
-				],
+				["U_Tank_green_F"],
+				["V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"],
+				[],
+				["H_HelmetCrew_I"],
+				["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"],
+				[],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1627,51 +1605,25 @@ private _value = (str {
 				"Heli Pilot",
 				[
 					[
-						[
-							"hgun_PDW2000_F","arifle_Mk20C_F","arifle_Mk20C_Plain_F","arifle_TRG21_F","arifle_TRG20_F"
-						],
-						[
-							"30Rnd_9x21_yellow_Mag","30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"
-						]
+						["hgun_PDW2000_F","arifle_Mk20C_F","arifle_Mk20C_Plain_F","arifle_TRG21_F","arifle_TRG20_F"],
+						["30Rnd_9x21_yellow_Mag","30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"]
 					],
 					[
-						[
-
-						],
-						[
-							
-						]
+						[],
+						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"
-					]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"]
 				],
-				[
-					"U_I_HeliPilotCoveralls"
-				],
-				[
-					"V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"
-				],
-				[
-					
-				],
-				[
-					"H_PilotHelmetHeli_I","H_CrewHelmetHeli_I"
-				],
-				[
-					"G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"
-				],
-				[
-
-				],
+				["U_I_HeliPilotCoveralls"],
+				["V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"],
+				[],
+				["H_PilotHelmetHeli_I","H_CrewHelmetHeli_I"],
+				["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"],
+				[],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1682,51 +1634,25 @@ private _value = (str {
 				"Pilot",
 				[
 					[
-						[
-							"hgun_PDW2000_F","arifle_Mk20C_F"
-						],
-						[
-							"30Rnd_9x21_yellow_Mag","30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow"
-						]
+						["hgun_PDW2000_F","arifle_Mk20C_F"],
+						["30Rnd_9x21_yellow_Mag","30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow"]
 					],
 					[
-						[
-
-						],
-						[
-							
-						]
+						[],
+						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"
-					]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"]
 				],
-				[
-					"U_I_pilotCoveralls"
-				],
-				[
-				
-				],
-				[
-					"B_Parachute"
-				],
-				[
-					"H_PilotHelmetFighter_I"
-				],
-				[
-					
-				],
-				[
-
-				],
+				["U_I_pilotCoveralls"],
+				[],
+				["B_Parachute"],
+				["H_PilotHelmetFighter_I"],
+				[],
+				[],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1737,37 +1663,25 @@ private _value = (str {
 				"Squad Leader",
 				[
 					[
-						[
-							"arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"
-						],
-						[
-							"30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"
-						]
+						["arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"],
+						["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Hamr","optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_ERCO_blk_F","optic_MRCO","optic_Holosight"
-					]
+					["optic_Hamr","optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_ERCO_blk_F","optic_MRCO","optic_Holosight"]
 				],
 				[],
 				["V_PlateCarrierIA2_dgtl"],
-				[
-					"B_RadioBag_01_digi_F"
-				],
+				["B_RadioBag_01_digi_F"],
 				[],
 				[],
-				["Laserdesignator_03","I_UavTerminal"],
+				["Laserdesignator_03"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1778,34 +1692,22 @@ private _value = (str {
 				"Autorifleman",
 				[
 					[
-						[
-							"LMG_Mk200_F","LMG_Mk200_black_F"
-						],
-						[
-							"200Rnd_65x39_cased_Box","200Rnd_65x39_cased_Box_Tracer","200Rnd_556x45_Box_F","200Rnd_556x45_Box_Tracer_F"
-						]
+						["LMG_Mk200_F","LMG_Mk200_black_F"],
+						["200Rnd_65x39_cased_Box","200Rnd_65x39_cased_Box_Tracer","200Rnd_556x45_Box_F","200Rnd_556x45_Box_Tracer_F"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"
-					]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
 				[],
 				["V_PlateCarrierIA2_dgtl"],
-				[
-					"B_TacticalPack_oli","B_Kitbag_rgr"
-				],
+				["B_TacticalPack_oli","B_Kitbag_rgr"],
 				[],
 				[],
 				[],
@@ -1819,38 +1721,22 @@ private _value = (str {
 				"Light Anti-Tank",
 				[
 					[
-						[
-							"arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"
-						],
-						[
-							"30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"
-						]
+						["arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"],
+						["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow"]
 					],
 					[
-						[
-							"launch_NLAW_F","launch_MRAWS_green_F","launch_MRAWS_green_rail_F"
-						],
-						[
-							"NLAW_F","MRAWS_HE_F","MRAWS_HEAT55_F"
-						]
+						["launch_NLAW_F","launch_MRAWS_green_F","launch_MRAWS_green_rail_F"],
+						["NLAW_F","MRAWS_HE_F","MRAWS_HEAT55_F"]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"
-					]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
 				[],
 				[],
-				[
-					"B_TacticalPack_oli","B_Kitbag_rgr","B_Carryall_oli"
-				],
+				["B_TacticalPack_oli","B_Kitbag_rgr","B_Carryall_oli"],
 				[],
 				[],
 				[],
@@ -1864,47 +1750,25 @@ private _value = (str {
 				"Marksman",
 				[
 					[
-						[
-							"srifle_EBR_F","srifle_DMR_06_olive_F","srifle_DMR_03_khaki_F"
-						],
-						[
-							"20Rnd_762x51_Mag","10Rnd_Mk14_762x51_Mag"
-						]
+						["srifle_EBR_F","srifle_DMR_06_olive_F","srifle_DMR_03_khaki_F"],
+						["20Rnd_762x51_Mag","10Rnd_Mk14_762x51_Mag"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","muzzle_snds_H","optic_SOS","optic_DMS","bipod_01_F_snd","bipod_01_F_blk","muzzle_snds_H_snd_F","optic_NVS"
-					]
+					["acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","muzzle_snds_H","optic_SOS","optic_DMS","bipod_01_F_snd","bipod_01_F_blk","muzzle_snds_H_snd_F","optic_NVS"]
 				],
-				[
-					
-				],
-				[
-					"V_PlateCarrierIA2_dgtl"
-				],
-				[
-					
-				],
-				[
-					
-				],
-				[
-					
-				],
-				[
-					"Rangefinder"
-				],
+				[],
+				["V_PlateCarrierIA2_dgtl"],
+				[],
+				[],
+				[],
+				["Rangefinder"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1915,33 +1779,21 @@ private _value = (str {
 				"Grenadier",
 				[
 					[
-						[
-							"arifle_Mk20_GL_F","arifle_TRG21_GL_F"
-						],
-						[
-							"30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow","1Rnd_HE_Grenade_shell","UGL_FlareWhite_F","UGL_FlareGreen_F","UGL_FlareRed_F","UGL_FlareYellow_F","UGL_FlareCIR_F","1Rnd_Smoke_Grenade_shell","1Rnd_SmokeRed_Grenade_shell","1Rnd_SmokeGreen_Grenade_shell","1Rnd_SmokeYellow_Grenade_shell","1Rnd_SmokePurple_Grenade_shell","1Rnd_SmokeBlue_Grenade_shell","1Rnd_SmokeOrange_Grenade_shell"
-						]
+						["arifle_Mk20_GL_F","arifle_TRG21_GL_F"],
+						["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow","1Rnd_HE_Grenade_shell","UGL_FlareWhite_F","UGL_FlareGreen_F","UGL_FlareRed_F","UGL_FlareYellow_F","UGL_FlareCIR_F","1Rnd_Smoke_Grenade_shell","1Rnd_SmokeRed_Grenade_shell","1Rnd_SmokeGreen_Grenade_shell","1Rnd_SmokeYellow_Grenade_shell","1Rnd_SmokePurple_Grenade_shell","1Rnd_SmokeBlue_Grenade_shell","1Rnd_SmokeOrange_Grenade_shell"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"
-					]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
 				[],
-				[
-					"V_PlateCarrierIAGL_dgtl"
-				],
+				["V_PlateCarrierIAGL_dgtl"],
 				[],
 				[],
 				[],
@@ -1956,34 +1808,22 @@ private _value = (str {
 				"Heavy Gunner",
 				[
 					[
-						[
-							"MMG_02_black_F","MMG_02_sand_F"
-						],
-						[
-							"130Rnd_338_Mag"
-						]
+						["MMG_02_black_F","MMG_02_sand_F"],
+						["130Rnd_338_Mag"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_Aco","optic_ACO_grn","optic_Holosight","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Hamr","optic_ERCO_blk_F"
-					]
+					["optic_Aco","optic_ACO_grn","optic_Holosight","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Hamr","optic_ERCO_blk_F"]
 				],
 				[],
 				[],
-				[
-					"B_Kitbag_rgr","B_TacticalPack_oli"
-				],
+				["B_Kitbag_rgr","B_TacticalPack_oli"],
 				[],
 				[],
 				[],
@@ -2042,28 +1882,18 @@ private _value = (str {
 				"Sharpshooter",
 				[
 					[
-						[
-							"srifle_GM6_F","srifle_DMR_02_F"
-						],
-						[
-							"5Rnd_127x108_Mag","10Rnd_338_Mag"
-						]
+						["srifle_GM6_F","srifle_DMR_02_F"],
+						["5Rnd_127x108_Mag","10Rnd_338_Mag"]
 					],
 					[
 						[],
 						[]
 					],
 					[
-						[
-							"hgun_ACPC2_F","hgun_Pistol_heavy_02_F"
-						],
-						[
-							"16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"
-						]
+						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					[
-						"optic_NVS","optic_LRPS","optic_AMS","optic_KHS_blk","acc_pointer_IR"
-					]
+					["optic_NVS","optic_LRPS","optic_AMS","optic_KHS_blk","acc_pointer_IR"]
 				],
 				["U_I_FullGhillie_sard","U_I_FullGhillie_ard"],
 				["V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli"],
@@ -2183,6 +2013,36 @@ private _value = (str {
 				["H_HelmetSpecB_wdl"],
 				[],
 				["Medikit","G_Respirator_white_F","G_Respirator_Red_F","G_Respirator_blue_F"],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Engineer";
+			[
+				west,
+				"Enoch",
+				"Engineer",
+				[
+					[
+						["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer",
+						"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				[],
+				[],
+				["B_Kitbag_rgr"],
+				[],
+				[],
+				["Toolkit","MineDetector"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -2386,7 +2246,7 @@ private _value = (str {
 				["H_Booniehat_mgrn","H_Booniehat_oli","H_Booniehat_wdl","H_Bandanna_oli","H_ShemagOpen_olive","H_Watchcap_camo","H_Watchcap_khk","H_Watchcap_blk"],
 				["G_Tactical_Black","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Tactical_Clear"],
 				["Rangefinder"],
-				true
+				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
 			comment "Grenadier";
@@ -2496,11 +2356,11 @@ private _value = (str {
 					],
 					["muzzle_snds_L","muzzle_snds_acp","optic_LRPS","optic_AMS","optic_KHS_blk","bipod_01_F_blk","optic_NVS"]
 				],
-				["U_B_FullGhillie_lsh"],
-				["V_Chestrig_rgr","V_Chestrig_oli"],
+				["U_B_CombatUniform_vest_mcam_wdl_f","U_B_CombatUniform_mcam_wdl_f","U_B_CombatUniform_tshirt_mcam_wdL_f"],
+				["V_Rangemaster_belt","V_PlateCarrier1_wdl","V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli"],
 				[],
-				["H_Booniehat_khk","H_Watchcap_camo","H_Watchcap_khk","H_Booniehat_mgrn"],
-				["G_Bandanna_oli"],
+				["H_Booniehat_mgrn","H_Booniehat_oli","H_Booniehat_wdl","H_Bandanna_oli","H_ShemagOpen_olive","H_Watchcap_camo","H_Watchcap_khk","H_Watchcap_blk"],
+				["G_Tactical_Black","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Tactical_Clear"],
 				["Rangefinder"],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
@@ -5458,15 +5318,15 @@ missionNamespace setVariable [_varName,_value,true];
 
 comment "
 	Changes:
-	 - Added ability for pilots/crewmen to talk in command channel. Allowing them to have their own squads and transmit to other squad leaders.
-	 - Added the Engineer role. Currently only available on NATO Arid configs.
-	 - Added audio cue when commander supports are available again. 
-	 - Added airdrop commander support. Currently only an arsenal is available. Vehicles *may* be added. Likely not.
-	 - Changed Snipers to Sharpshooters. They should be a better fit with the squads and infantry focus.
-	 - Changed the method by which default loadouts are applied. Instead of manually made defaults, random equipment will be applied from available equipment within the config.
-	 - Fixed issue where SLs wouldn't be group leaders.
-	 - Fixed issue where SLs when downed would cause a constant change of command. TWO, TAKING COMMAND!
-	 - Fixed issue where Zeus couldn't open the arsenal or enter vehicles.
+		- Added ability for pilots/crewmen to talk in command channel. Allowing them to have their own squads and transmit to other squad leaders.
+		- Added the Engineer role. Currently only available on NATO Arid configs.
+		- Added audio cue when commander supports are available again. 
+		- Added airdrop commander support. Currently only an arsenal is available. Vehicles *may* be added. Likely not.
+		- Changed Snipers to Sharpshooters. They should be a better fit with the squads and infantry focus.
+		- Changed the method by which default loadouts are applied. Instead of manually made defaults, random equipment will be applied from available equipment within the config.
+		- Fixed issue where SLs wouldn't be group leaders.
+		- Fixed issue where SLs when downed would cause a constant change of command. TWO, TAKING COMMAND!
+		- Fixed issue where Zeus couldn't open the arsenal or enter vehicles.
 
 	TODO: 
 	 - 
