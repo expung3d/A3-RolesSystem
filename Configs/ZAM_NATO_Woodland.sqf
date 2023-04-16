@@ -2,7 +2,7 @@ comment "
 	Author: ZAM
 	Faction: NATO Woodland
 	Maps: Livonia
-	Version: 1.0
+	Version: 1.1
 ";
 
 comment "NATO Livonia Default";
@@ -113,6 +113,36 @@ comment "NATO Livonia Roles";
 		["H_HelmetSpecB_wdl"],
 		[],
 		["Medikit","G_Respirator_white_F","G_Respirator_Red_F","G_Respirator_blue_F"],
+		true
+	] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+	comment "Engineer";
+	[
+		west,
+		"Enoch",
+		"Engineer",
+		[
+			[
+				["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
+				["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer",
+				"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"]
+			],
+			[
+				[],
+				[]
+			],
+			[
+				["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+				["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+			],
+			["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+		],
+		[],
+		[],
+		["B_Kitbag_rgr"],
+		[],
+		[],
+		["Toolkit","MineDetector"],
 		true
 	] call MAZ_RS_fnc_createNewEquipmentForRole;
 

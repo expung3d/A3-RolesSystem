@@ -2,7 +2,7 @@ comment "
 	Author: ZAM
 	Faction: AAF
 	Maps: Altis, Stratis
-	Version: 1.0
+	Version: 1.1
 ";
 
 comment "Default AAF Uniforms";
@@ -104,6 +104,36 @@ comment "Default AAF Roles";
 		[],
 		[],
 		[],
+		true
+	] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+	comment "AAF Engineer";
+	[
+		independent,
+		_x,
+		"Engineer",
+		[
+			[
+				["arifle_Mk20_F","arifle_Mk20C_F","arifle_TRG21_F","arifle_TRG20_F"],
+				["30Rnd_556x45_Stanag_Tracer_yellow","30Rnd_556x45_Stanag_yellow","30Rnd_556x45_Stanag_Sand_yellow","30Rnd_556x45_Stanag_Sand_Tracer_yellow",
+				"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"]
+			],
+			[
+				[],
+				[]
+			],
+			[
+				["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
+				["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
+			],
+			["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
+		],
+		[],
+		["V_PlateCarrierIA2_dgtl"],
+		["B_TacticalPack_oli","B_Kitbag_rgr"],
+		[],
+		[],
+		["Toolkit","MineDetector"],
 		true
 	] call MAZ_RS_fnc_createNewEquipmentForRole;
 
