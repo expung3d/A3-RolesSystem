@@ -6,10 +6,10 @@ private _myJIPCode = "MAZ_RolesSystem_JIP";
 MAZ_RS_enabled = true;
 publicVariable 'MAZ_RS_enabled';
 
-MAZ_RS_DebugMode = false;
+MAZ_RS_DebugMode = true;
 publicVariable "MAZ_RS_DebugMode";
 
-MAZ_RS_Version = "1.3.4";
+MAZ_RS_Version = "1.4.0";
 publicVariable "MAZ_RS_Version";
 
 MAZ_RS_GroundCommanders = ["","",""];
@@ -319,7 +319,7 @@ private _value = (str {
 	call MAZ_fnc_keybindCarrier;
 
 	player setVariable ["MAZ_RS_roles_role","Recruit",true];
-	MAZ_RS_rolesList = ["Recruit","Rifleman","Medic","Crewman","Heli Pilot","Pilot","Squad Leader","Autorifleman","Light Anti-Tank","Marksman","Grenadier","Heavy Gunner","Heavy Anti-Tank","Sniper"];
+	MAZ_RS_rolesList = ["Recruit","Rifleman","Medic","Engineer","Crewman","Heli Pilot","Pilot","Squad Leader","Autorifleman","Light Anti-Tank","Marksman","Grenadier","Heavy Gunner","Heavy Anti-Tank","Sharpshooter"];
 	MAZ_RS_rolesDescriptions = [
 		[
 			"Recruit",
@@ -336,6 +336,11 @@ private _value = (str {
 			"A Combat Lifesaver, can have extra FAKs, can carry a Medkit, and revive others faster.",
 			"a3\ui_f\data\igui\cfg\holdactions\holdaction_revivemedic_ca.paa"
 		],
+		[
+			"Engineer",
+            "An Engineer who specializes in deploying and clearing mines. Has access to mines, a mine detector, and a toolkit.",
+            "a3\ui_f\data\igui\cfg\actions\repair_ca.paa"
+        ],
 		[
 			"Crewman",
 			"This role allows the player to enter armored vehicles as a crewman (Driver, Gunner, Commander).",
@@ -387,13 +392,13 @@ private _value = (str {
 			"a3\ui_f_jets\data\gui\cfg\hints\weaponsmissiles_ca.paa"
 		],
 		[
-			"Sniper",
-			"Snipers are like marksmen, but on steroids. Like marksmen, they have long range rifles, but they shoot bigger bullets, have a farther range, and have larger optics.",
+			"Sharpshooter",
+			"Sharpshooters are like marksmen, but on steroids. Like marksmen, they have long range rifles, but they shoot bigger bullets, have a farther range, and have larger optics.",
 			"a3\structures_f_mark\vr\helpers\data\vr_symbol_mark_weaponhandling3_ca.paa"
 		]
 	];
 	MAZ_RS_specialRolesList = ["Autorifleman","Light Anti-Tank","Marksman","Grenadier"];
-	MAZ_RS_supportRolesList = ["Heavy Gunner","Heavy Anti-Tank","Sniper"];
+	MAZ_RS_supportRolesList = ["Heavy Gunner","Heavy Anti-Tank","Sharpshooter"];
 
 	MAZ_RS_fnc_createNewDefaultSideUniform = {
 		params [
@@ -535,7 +540,7 @@ private _value = (str {
 					"H_HelmetB","H_HelmetB_camo","H_HelmetB_light","H_Booniehat_khk","H_Booniehat_mcamo","H_Booniehat_tan","H_Booniehat_khk_hs","H_HelmetB_grass","H_HelmetB_snakeskin","H_HelmetB_desert","H_HelmetB_black","H_HelmetB_sand","H_Cap_oli","H_Cap_headphones","H_Cap_tan","H_Cap_blk","H_Cap_tan_specops_US","H_Cap_khaki_specops_UK","H_Cap_grn","H_Cap_oli_hs","H_Cap_usblack","H_MilCap_mcamo","H_MilCap_gry","H_HelmetB_light_grass","H_HelmetB_light_snakeskin","H_HelmetB_light_desert","H_HelmetB_light_black","H_HelmetB_light_sand","H_Bandanna_khk","H_Bandanna_khk_hs","H_Bandanna_cbr","H_Bandanna_sand","H_Bandanna_gry","H_Bandanna_mcamo","H_Watchcap_blk","H_Watchcap_cbr","H_Watchcap_khk","H_Watchcap_camo","H_Booniehat_mgrn","H_MilCap_grn"
 				],
 				[
-					"G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_01_F"
+					"G_Lowprofile","G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_01_F"
 				]
 			] call MAZ_RS_fnc_createNewDefaultSideUniform;
 		}forEach ["Altis","Malden","Stratis"];
@@ -626,6 +631,38 @@ private _value = (str {
 				["H_HelmetSpecB","H_HelmetSpecB_paint1","H_HelmetSpecB_paint2","H_HelmetSpecB_blk","H_HelmetSpecB_snakeskin","H_HelmetSpecB_sand"],
 				[],
 				["Medikit","G_Respirator_white_F","G_Respirator_Red_F","G_Respirator_blue_F"],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "NATO Engineer";
+			[
+				west,
+				_x,
+				"Engineer",
+				[
+					[
+						["arifle_MX_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F","arifle_SPAR_01_snd_F"],
+						[
+							"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Sand","30Rnd_556x45_Stanag_Sand_Tracer_Red","30Rnd_65x39_caseless_mag","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_mag_Tracer","30Rnd_65x39_caseless_black_mag_Tracer",
+							"DemoCharge_Remote_Mag","SatchelCharge_Remote_Mag","ATMine_Range_Mag","ClaymoreDirectionalMine_Remote_Mag","APERSMine_Range_Mag","SLAMDirectionalMine_Wire_Mag","APERSTripMine_Wire_Mag"
+						]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_F","hgun_Pistol_heavy_01_F","hgun_P07_blk_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_green_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","optic_Holosight","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				[],
+				[],
+				["B_Kitbag_rgr"],
+				[],
+				[],
+				["ToolKit","MineDetector"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -919,11 +956,11 @@ private _value = (str {
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
-			comment "NATO Sniper";
+			comment "NATO Sharpshooter";
 			[
 				west,
 				_x,
-				"Sniper",
+				"Sharpshooter",
 				[
 					[
 						["srifle_LRR_F","srifle_LRR_camo_F","srifle_DMR_02_F","srifle_DMR_02_camo_F","srifle_DMR_02_sniper_F"],
@@ -939,11 +976,11 @@ private _value = (str {
 					],
 					["muzzle_snds_L","muzzle_snds_acp","optic_LRPS","optic_AMS","optic_AMS_snd","optic_KHS_blk","optic_KHS_tan","bipod_01_F_blk","optic_NVS"]
 				],
-				["U_B_FullGhillie_sard","U_B_FullGhillie_ard"],
-				["V_Chestrig_rgr","V_Chestrig_oli"],
+				["U_B_CombatUniform_mcam","U_B_CombatUniform_mcam_tshirt","U_B_CombatUniform_mcam_vest","U_B_GhillieSuit","U_B_CTRG_1","U_B_CTRG_2","U_B_CTRG_3","U_B_survival_uniform"],
+				["V_Rangemaster_belt","V_PlateCarrier1_rgr","V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_khk","V_TacVest_oli"],
 				[],
-				["H_Booniehat_khk","H_Booniehat_mcamo","H_Booniehat_tan","H_Booniehat_khk_hs","H_Bandanna_khk","H_Bandanna_khk_hs","H_Bandanna_cbr","H_Bandanna_sand","H_Bandanna_mcamo","H_Watchcap_cbr","H_Watchcap_khk","H_Booniehat_mgrn"],
-				["G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan"],
+				["H_Booniehat_khk","H_Booniehat_mcamo","H_Booniehat_tan","H_Booniehat_khk_hs","H_Bandanna_khk","H_Bandanna_khk_hs","H_Bandanna_cbr","H_Bandanna_sand","H_Bandanna_mcamo","H_ShemagOpen_tan","H_Watchcap_cbr","H_Watchcap_khk","H_Watchcap_camo","H_Booniehat_mgrn"],
+				["G_Tactical_Black","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Tactical_Clear"],
 				["Rangefinder"],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
@@ -1077,7 +1114,7 @@ private _value = (str {
 				["B_AssaultPack_ocamo"],
 				["H_HelmetCrew_O","H_Tank_black_F"],
 				["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_02_sand_F"],
-				["Toolkit"],
+				["ToolKit"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1106,7 +1143,7 @@ private _value = (str {
 				["B_Parachute","B_AssaultPack_ocamo"],
 				["H_PilotHelmetHeli_O","H_CrewHelmetHeli_O"],
 				[],
-				["Toolkit"],
+				["ToolKit"],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1342,11 +1379,11 @@ private _value = (str {
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
-			comment "Sniper";
+			comment "Sharpshooter";
 			[
 				east,
 				_x,
-				"Sniper",
+				"Sharpshooter",
 				[
 					[
 						["srifle_GM6_F","srifle_GM6_camo_F","srifle_DMR_05_blk_F","srifle_DMR_05_hex_F"],
@@ -1390,7 +1427,7 @@ private _value = (str {
 					"H_Booniehat_oli","H_Booniehat_dgtl","H_HelmetIA","H_Cap_headphones","H_Cap_grn","H_Cap_blk_Raven","H_Bandanna_khk","H_Bandanna_khk_hs","H_Bandanna_sgg","H_Watchcap_blk","H_Watchcap_camo","H_Booniehat_mgrn"
 				],
 				[
-					"G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"
+					"G_Lowprofile","G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"
 				]
 			] call MAZ_RS_fnc_createNewDefaultSideUniform;
 		} forEach ["Altis","Stratis"];
@@ -1569,7 +1606,7 @@ private _value = (str {
 					"V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"
 				],
 				[
-					
+					"B_AssaultPack_dgtl"	
 				],
 				[
 					"H_HelmetCrew_I"
@@ -1578,7 +1615,7 @@ private _value = (str {
 					"G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"
 				],
 				[
-
+					"ToolKit"
 				],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
@@ -1730,13 +1767,9 @@ private _value = (str {
 				],
 				[],
 				[],
-				["Laserdesignator_03"],
+				["Laserdesignator_03","I_UavTerminal"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
-
-
-
-
 
 			comment "AAF Autorifleman";
 			[
@@ -1916,10 +1949,6 @@ private _value = (str {
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
-
-
-
-
 			comment "AAF Heavy Gunner";
 			[
 				independent,
@@ -2006,11 +2035,11 @@ private _value = (str {
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
-			comment "AAF Sniffysniper";
+			comment "AAF Sharpshooter";
 			[
 				independent,
 				_x,
-				"Sniper",
+				"Sharpshooter",
 				[
 					[
 						[
@@ -2045,6 +2074,436 @@ private _value = (str {
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 		} forEach ["Altis","Stratis"];
+
+		comment "NATO Livonia Default";
+
+			[
+				west,
+				"Enoch",
+				[
+					"U_B_CombatUniform_vest_mcam_wdl_f","U_B_CombatUniform_mcam_wdl_f","U_B_CombatUniform_tshirt_mcam_wdL_f"
+				],
+				[
+					"V_Rangemaster_belt","V_Chestrig_rgr","V_TacVest_oli","V_PlateCarrier1_wdl","V_PlateCarrier2_wdl"
+				],
+				[
+					"B_AssaultPack_wdl_F"
+				],
+				[
+					"H_Booniehat_oli","H_Booniehat_khk_hs","H_Cap_oli","H_Cap_headphones","H_Cap_blk","H_Cap_grn","H_Cap_oli_hs","H_Cap_usblack","H_Bandanna_khk","H_Bandanna_khk_hs","H_Watchcap_blk","H_Watchcap_camo","H_Booniehat_mgrn","H_Booniehat_wdl","H_MilCap_wdl","H_HelmetB_plain_wdl","H_HelmetB_light_wdl"
+				],
+				[
+					"G_Spectacles","G_Spectacles_Tinted","G_Lowprofile","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Balaclava_blk","G_Balaclava_oli","G_Balaclava_combat","G_Balaclava_lowprofile","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_beast","G_Bandanna_shades","G_Bandanna_sport","G_Shades_Blue","G_Tactical_Clear","G_Balaclava_TI_blk_F","G_Balaclava_TI_G_blk_F","G_Combat_Goggles_tna_F","G_AirPurifyingRespirator_01_F"
+				]
+			] call MAZ_RS_fnc_createNewDefaultSideUniform;
+
+		comment "NATO Livonia Roles";
+
+			comment "Recruit";
+			[
+				west,
+				"Enoch",
+				"Recruit",
+				[
+					[
+						["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				["U_B_CombatUniform_vest_mcam_wdl_f","U_B_CombatUniform_mcam_wdl_f","U_B_CombatUniform_tshirt_mcam_wdL_f"],
+				["V_Rangemaster_belt","V_Chestrig_rgr","V_TacVest_oli","V_PlateCarrier1_wdl","V_PlateCarrier2_wdl"],
+				["B_AssaultPack_wdl_F"],
+				["H_Booniehat_oli","H_Booniehat_khk_hs","H_Cap_oli","H_Cap_headphones","H_Cap_blk","H_Cap_grn","H_Cap_oli_hs","H_Cap_usblack","H_Bandanna_khk","H_Bandanna_khk_hs","H_Watchcap_blk","H_Watchcap_camo","H_Booniehat_mgrn","H_Booniehat_wdl","H_MilCap_wdl","H_HelmetB_plain_wdl","H_HelmetB_light_wdl"],
+				["G_Spectacles","G_Spectacles_Tinted","G_Lowprofile","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Balaclava_blk","G_Balaclava_oli","G_Balaclava_combat","G_Balaclava_lowprofile","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_beast","G_Bandanna_shades","G_Bandanna_sport","G_Shades_Blue","G_Tactical_Clear","G_Balaclava_TI_blk_F","G_Balaclava_TI_G_blk_F","G_Combat_Goggles_tna_F","G_AirPurifyingRespirator_01_F"],
+				[],
+				false
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Rifleman";
+			[
+				west,
+				"Enoch",
+				"Rifleman",
+				[
+					[
+						["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Medic";
+			[
+				west,
+				"Enoch",
+				"Medic",
+				[
+					[
+						["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				[],
+				["V_PlateCarrierSpec_wdl"],
+				["B_Kitbag_rgr"],
+				["H_HelmetSpecB_wdl"],
+				[],
+				["Medikit","G_Respirator_white_F","G_Respirator_Red_F","G_Respirator_blue_F"],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Crewman";
+			[
+				west,
+				"Enoch",
+				"Crewman",
+				[
+					[
+						["arifle_MXC_Black_F","SMG_01_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer","30Rnd_45ACP_Mag_SMG_01","30Rnd_45ACP_Mag_SMG_01_Tracer_Red"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				["U_B_CombatUniform_vest_mcam_wdl_f","U_B_CombatUniform_mcam_wdl_f","U_B_CombatUniform_tshirt_mcam_wdL_f"],
+				["V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli"],
+				["B_AssaultPack_rgr"],
+				["H_HelmetCrew_B"],
+				["G_Spectacles","G_Spectacles_Tinted","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Aviator","G_Bandanna_blk","G_Bandanna_khk","G_Bandanna_tan","G_Bandanna_shades","G_Shades_Blue","G_Tactical_Clear"],
+				["ToolKit"],
+				false
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Heli Pilot";
+			[
+				west,
+				"Enoch",
+				"Heli Pilot",
+				[
+					[
+						["arifle_MXC_Black_F","SMG_01_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer","30Rnd_45ACP_Mag_SMG_01","30Rnd_45ACP_Mag_SMG_01_Tracer_Red"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				["U_B_HeliPilotCoveralls"],
+				["V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_TacVest_blk"],
+				["B_AssaultPack_rgr","B_Parachute"],
+				["H_PilotHelmetHeli_B","H_CrewHelmetHeli_B"],
+				["G_Spectacles","G_Spectacles_Tinted","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Aviator","G_Bandanna_blk","G_Bandanna_khk","G_Bandanna_tan","G_Bandanna_shades","G_Shades_Blue","G_Tactical_Clear"],
+				["ToolKit"],
+				false
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Pilot";
+			[
+				west,
+				"Enoch",
+				"Pilot",
+				[
+					[
+						["arifle_MXC_Black_F","SMG_01_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer","30Rnd_45ACP_Mag_SMG_01","30Rnd_45ACP_Mag_SMG_01_Tracer_Red"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				["U_B_PilotCoveralls"],
+				[],
+				["B_Parachute"],
+				["H_PilotHelmetFighter_B"],
+				["G_Spectacles","G_Spectacles_Tinted","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Aviator","G_Bandanna_blk","G_Bandanna_khk","G_Bandanna_tan","G_Bandanna_shades","G_Shades_Blue","G_Tactical_Clear"],
+				[],
+				false
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Squad Leader";
+			[
+				west,
+				"Enoch",
+				"Squad Leader",
+				[
+					[
+						["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F","optic_Hamr","optic_MRCO","optic_ERCO_blk"]
+				],
+				[],
+				[],
+				["B_RadioBag_01_wdl_F"],
+				["H_HelmetSpecB_wdl"],
+				[],
+				["Laserdesignator_01_khk_F","B_UavTerminal"],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Autorifleman";
+			[
+				west,
+				"Enoch",
+				"Autorifleman",
+				[
+					[
+						["arifle_MX_SW_Black_F","LMG_03_F","arifle_SPAR_02_blk_F","arifle_SPAR_02_snd_F"],
+						["100Rnd_65x39_caseless_black_mag","100Rnd_65x39_caseless_black_mag_tracer","150Rnd_556x45_Drum_Mag_F","200Rnd_556x45_Box_F","200Rnd_556x45_Box_Tracer_F"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F","optic_Hamr","optic_ERCO_blk_F"]
+				],
+				[],
+				[],
+				["H_HelmetSpecB_wdl"],
+				[],
+				[],
+				[],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Light Anti-Tank";
+			[
+				west,
+				"Enoch",
+				"Light Anti-Tank",
+				[
+					[
+						["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer"]
+					],
+					[
+						["launch_NLAW_F","launch_MRAWS_green_rail_F"],
+						["NLAW_F","MRAWS_HE_F","MRAWS_HEAT55_F"]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				[],
+				[],
+				["B_Kitbag_rgr"],
+				[],
+				[],
+				[],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Marksman";
+			[
+				west,
+				"Enoch",
+				"Marksman",
+				[
+					[
+						["arifle_MXM_Black_F","srifle_EBR_F","srifle_DMR_03_F","srifle_DMR_03_khaki_F","arifle_SPAR_03_blk_F"],
+						["30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer","20Rnd_762x51_Mag"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["acc_flashlight","acc_pointer_IR","muzzle_snds_H","optic_SOS","optic_DMS","bipod_01_F_blk","optic_NVS"]
+				],
+				["U_B_CombatUniform_vest_mcam_wdl_f","U_B_CombatUniform_mcam_wdl_f","U_B_CombatUniform_tshirt_mcam_wdL_f"],
+				["V_Rangemaster_belt","V_PlateCarrier1_wdl","V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli"],
+				[],
+				["H_Booniehat_mgrn","H_Booniehat_oli","H_Booniehat_wdl","H_Bandanna_oli","H_ShemagOpen_olive","H_Watchcap_camo","H_Watchcap_khk","H_Watchcap_blk"],
+				["G_Tactical_Black","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Tactical_Clear"],
+				["Rangefinder"],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Grenadier";
+			[
+				west,
+				"Enoch",
+				"Grenadier",
+				[
+					[
+						["arifle_MX_GL_Black_F","arifle_SPAR_01_GL_blk_F"],
+						["1Rnd_HE_Grenade_shell","1Rnd_Smoke_Grenade_shell","1Rnd_SmokeGreen_Grenade_shell","1Rnd_SmokeRed_Grenade_shell","1Rnd_SmokeYellow_Grenade_shell","1Rnd_SmokePurple_Grenade_shell","1Rnd_SmokeBlue_Grenade_shell","1Rnd_SmokeOrange_Grenade_shell","3Rnd_HE_Grenade_shell","3Rnd_Smoke_Grenade_shell","3Rnd_SmokeRed_Grenade_shell","3Rnd_SmokeGreen_Grenade_shell","3Rnd_SmokeYellow_Grenade_shell","3Rnd_SmokePurple_Grenade_shell","3Rnd_SmokeBlue_Grenade_shell","3Rnd_SmokeOrange_Grenade_shell","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				["U_B_CombatUniform_vest_mcam_wdl_f","U_B_CombatUniform_mcam_wdl_f","U_B_CombatUniform_tshirt_mcam_wdL_f"],
+				["V_PlateCarrierGL_wdl"],
+				["B_AssaultPack_rgr","B_AssaultPack_wdl"],
+				["H_HelmetB_wdl","H_HelmetB_light_wdl","H_Booniehat_mcamo","H_HelmetSpecB_wdl","H_Cap_oli","H_Cap_headphones","H_Cap_blk","H_Cap_grn","H_Cap_oli_hs","H_Cap_usblack","H_Bandanna_khk","H_Bandanna_khk_hs","H_Watchcap_blk","H_Watchcap_khk","H_Watchcap_camo","H_Booniehat_mgrn","H_MilCap_grn"],
+				["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_01_F"],
+				[],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Heavy Gunner";
+			[
+				west,
+				"Enoch",
+				"Heavy Gunner",
+				[
+					[
+						["MMG_02_black_F"],
+						["130Rnd_338_Mag"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F","optic_Hamr","optic_ERCO_blk_F"]
+				],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Heavy Anti-Tank";
+			[
+				west,
+				"Enoch",
+				"Heavy Anti-Tank",
+				[
+					[
+						["arifle_MXC_Black_F","arifle_MX_Black_F","arifle_SPAR_01_blk_F"],
+						["30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_red","30Rnd_65x39_caseless_black_mag","30Rnd_65x39_caseless_black_mag_Tracer"]
+					],
+					[
+						["launch_B_Titan_olive_F","launch_I_Titan_short_F","launch_MRAWS_green_F"],
+						["Titan_AA","Titan_AT","MRAWS_HEAT_F","MRAWS_HEAT55_F"]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_pointer_IR","optic_Holosight_blk_F"]
+				],
+				[],
+				[],
+				["B_Kitbag_rgr"],
+				[],
+				[],
+				[],
+				true
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
+
+			comment "Sharpshooter";
+			[
+				west,
+				"Enoch",
+				"Sharpshooter",
+				[
+					[
+						["srifle_LRR_F","srifle_DMR_02_F","srifle_DMR_02_camo_F"],
+						["7Rnd_408_Mag","10Rnd_338_Mag"]
+					],
+					[
+						[],
+						[]
+					],
+					[
+						["hgun_P07_blk_F","hgun_Pistol_heavy_01_green_F"],
+						["16Rnd_9x21_Mag","16Rnd_9x21_red_Mag","11Rnd_45ACP_Mag"]
+					],
+					["muzzle_snds_L","muzzle_snds_acp","optic_LRPS","optic_AMS","optic_KHS_blk","bipod_01_F_blk","optic_NVS"]
+				],
+				["U_B_FullGhillie_lsh"],
+				["V_Chestrig_rgr","V_Chestrig_oli"],
+				[],
+				["H_Booniehat_khk","H_Watchcap_camo","H_Watchcap_khk","H_Booniehat_mgrn"],
+				["G_Bandanna_oli"],
+				["Rangefinder"],
+				false
+			] call MAZ_RS_fnc_createNewEquipmentForRole;
 	};
 
 	MAZ_RS_fnc_roleSystemMessage = {
@@ -2054,699 +2513,167 @@ private _value = (str {
 			playSound _sound;
 		};
 	};
-	
-	MAZ_RS_fnc_applyDefaultRoleEquipment = {
+
+	MAZ_RS_fnc_randomFromEquipment = {
 		params ["_role"];
-		private _sideOf = side (group player);
-		switch (_role) do {
-			case "Recruit": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MXC_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_mag",30],[],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",1]]],["V_PlateCarrier1_rgr",[["30Rnd_65x39_caseless_mag",3,30],["HandGrenade",1,1],["SmokeShell",1,1]]],[],"H_HelmetB_light","G_Combat",[],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MXC_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",1]]],["V_PlateCarrier1_tna_F",[["HandGrenade",1,1],["SmokeShell",1,1],["30Rnd_65x39_caseless_khaki_mag",3,30]]],[],"H_HelmetB_Light_tna_F","G_Combat_Goggles_tna_F",[],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MXC_Black_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_black_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["FirstAidKit",1]]],["V_PlateCarrier1_wdl",[["HandGrenade",1,1],["SmokeShell",1,1],["30Rnd_65x39_caseless_black_mag",3,30]]],[],"H_HelmetB_light_wdl","G_Combat_Goggles_tna_F",[],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_C_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_green",30],[],""],[],["hgun_Pistol_01_F","","","",["10Rnd_9x21_Mag",10],[],""],["U_O_CombatUniform_ocamo",[["FirstAidKit",1]]],["V_HarnessO_brn",[["30Rnd_65x39_caseless_green",3,30],["HandGrenade",1,1],["SmokeShell",1,1]]],[],"H_HelmetO_ocamo","G_Balaclava_blk",[],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","O_NVGoggles_hex_F"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_CTAR_ghex_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_580x42_Mag_F",30],[],""],[],["hgun_Pistol_01_F","","","",["10Rnd_9x21_Mag",10],[],""],["U_O_T_Soldier_F",[["FirstAidKit",1]]],["V_HarnessO_ghex_F",[["HandGrenade",1,1],["SmokeShell",1,1],["30Rnd_580x42_Mag_F",3,30]]],[],"H_HelmetO_ghex_F","G_Balaclava_oli",[],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","O_NVGoggles_ghex_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_blk_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_580x42_Mag_F",30],[],""],[],["hgun_Pistol_01_F","","","",["10Rnd_9x21_Mag",10],[],""],["U_O_R_Gorka_01_F",[["FirstAidKit",1]]],["V_SmershVest_01_F",[["HandGrenade",1,1],["SmokeShell",1,1],["30Rnd_580x42_Mag_F",3,30]]],[],"H_HelmetAggressor_F","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","O_NVGoggles_grn_F"]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_556x45_Stanag",30],[],""],[],["hgun_ACPC2_F","","","",["9Rnd_45ACP_Mag",9],[],""],["U_I_CombatUniform_shortsleeve",[["FirstAidKit",1]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",1,1],["SmokeShell",1,1],["30Rnd_556x45_Stanag",3,30]]],[],"H_HelmetIA","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],[],["hgun_ACPC2_F","","","",["9Rnd_45ACP_Mag",9],[],""],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",1]]],["V_Chestrig_khk",[["HandGrenade",1,1],["SmokeShell",1,1],["30Rnd_545x39_Mag_F",3,30]]],[],"H_ShemagOpen_tan","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","acc_pointer_IR","optic_ico_01_f",["30Rnd_65x39_caseless_msbs_mag",30],[],""],[],["hgun_ACPC2_F","","","",["9Rnd_45ACP_Mag",9],[],""],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",1]]],["V_Chestrig_rgr",[["HandGrenade",1,1],["SmokeShell",1,1],["30Rnd_65x39_caseless_msbs_mag",3,30]]],[],"H_HelmetHBK_F","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
+		private _side = side (group player);
+		private _map = worldName;
+		_role = [_role] call MAZ_RS_fnc_formatRoleName;
+		player setUnitLoadout [[],[],[],[],[],[],"","",["","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
+		private _variableNameItems = format ["MAZ_RS_%1_%2_%3_Items",_side,_map,_role];
+		private _variableNameWeapons = format ["MAZ_RS_%1_%2_%3_Weapons",_side,_map,_role];
+		private _variableNameMags = format ["MAZ_RS_%1_%2_%3_Mags",_side,_map,_role];
+		private _variableNameBackpack = format ["MAZ_RS_%1_%2_%3_Backpack",_side,_map,_role];
+
+		private _var = missionNamespace getVariable [_variableNameItems,[]];
+		private _uniforms = _var select {((_x call BIS_fnc_itemType) # 1) == "Uniform"};
+		private _vests = _var select {((_x call BIS_fnc_itemType) # 1) == "Vest"};
+		private _headgear = _var select {((_x call BIS_fnc_itemType) # 1) == "Headgear"};
+		private _glasses = _var select {((_x call BIS_fnc_itemType) # 1) == "Glasses"};
+
+		player forceAddUniform (selectRandom _uniforms);
+		player addVest (selectRandom _vests);
+		player addHeadgear (selectRandom _headgear);
+		player addGoggles (selectRandom _glasses);
+		for "_i" from 0 to 2 do {
+			player addItemToUniform "FirstAidKit";
+		};
+		if(call MAZ_RS_fnc_isNightTime) then {
+			private _nvgs = selectRandom (_var select {((_x call BIS_fnc_itemType) # 1) == "NVGoggles"});
+			player addItem _nvgs;
+			player assignItem _nvgs;
+		};
+
+		_var = missionNamespace getVariable [_variableNameBackpack,[]];
+		player addBackpackGlobal (selectRandom _var);
+
+		_var = missionNamespace getVariable [_variableNameWeapons,[]];
+		private _rifles = _var select {
+			(((_x call BIS_fnc_itemType) # 1) == "AssaultRifle") || 
+			(((_x call BIS_fnc_itemType) # 1) == "MachineGun") || 
+			(((_x call BIS_fnc_itemType) # 1) == "SniperRifle") || 
+			(((_x call BIS_fnc_itemType) # 1) == "SubmachineGun")
+		};
+		private _launchers = _var select {
+			((_x call BIS_fnc_itemType) # 1) == "MissileLauncher" ||
+			((_x call BIS_fnc_itemType) # 1) == "RocketLauncher"
+		};
+		private _pistols = _var select {((_x call BIS_fnc_itemType) # 1) == "Handgun"};
+		
+		private _rifle = selectRandom _rifles;
+		private _launcher = selectRandom _launchers;
+		private _pistol = selectRandom _pistols;
+
+		_var = missionNamespace getVariable [_variableNameMags,[]];
+		if(!isNil "_rifle") then {
+			private _allMags = ([_rifle] call BIS_fnc_compatibleMagazines) apply {tolower _x};
+			private _rifleMag = selectRandom (_var select {
+				(toLower _x) in _allMags && ((_x call BIS_fnc_itemType) # 1 == "Bullet")
+			});
+			private _magCount = switch (_role) do {
+				case "Heavy_Gunner";
+				case "Autorifleman": {2};
+				default {6};
+			};
+			if(_role == "Grenadier") then {
+				private _grenadeMag = selectRandom (_var select {
+					(toLower _x) in _allMags && ((_x call BIS_fnc_itemType) # 1 == "Shell")
+				});
+				for "_i" from 0 to 9 do {
+					player addMagazine _grenadeMag;
+				};
+				private _smokeMags = _var select {
+					(toLower _x) in _allMags && ((_x call BIS_fnc_itemType) # 1 == "SmokeShell")
+				};
+				for "_i" from 0 to 3 do {
+					player addMagazine (selectRandom _smokeMags);
 				};
 			};
-			case "Rifleman": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MX_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_mag",30],[],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",3]]],["V_PlateCarrier2_rgr",[["30Rnd_65x39_caseless_mag",7,30],["HandGrenade",2,1],["SmokeShell",2,1]]],[],"H_HelmetB_desert","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_PlateCarrier2_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],[],"H_HelmetB_tna_F","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["FirstAidKit",3]]],["V_PlateCarrier2_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],[],"H_HelmetB_plain_wdl","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_HarnessO_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],[],"H_HelmetO_ocamo","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_HarnessO_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],[],"H_HelmetO_ghex_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_blk_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_580x42_Mag_F",30],[],""],[],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",5,30]]],[],"H_HelmetAggressor_cover_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_556x45_Stanag",30],[],""],[],[],["U_I_CombatUniform",[["FirstAidKit",3]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_556x45_Stanag",5,30]]],[],"H_HelmetIA","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_545x39_Mag_F",5,30]]],[],"H_Cap_tan","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","acc_pointer_IR","optic_ico_01_f",["30Rnd_65x39_caseless_msbs_mag",30],[],""],[],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",5,30]]],[],"H_HelmetHBK_headset_F","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
+			for "_i" from 0 to _magCount do {
+				player addMagazine _rifleMag;
 			};
-			case "Medic": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MX_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_mag",30],[],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["SmokeShell",3,1]]],["V_PlateCarrier2_rgr",[["30Rnd_65x39_caseless_mag",7,30],["HandGrenade",2,1],["SmokeShell",2,1]]],["B_AssaultPack_rgr",[["FirstAidKit",10],["Medikit",1]]],"H_HelmetB_desert","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["SmokeShell",3,1]]],["V_PlateCarrier2_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],["B_AssaultPack_tna_F",[["FirstAidKit",10],["Medikit",1]]],"H_HelmetB_tna_F","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["SmokeShell",3,1]]],["V_PlateCarrier2_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],["B_AssaultPack_wdl_F",[["FirstAidKit",10],["Medikit",1]]],"H_HelmetB_plain_wdl","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_CombatUniform_ocamo",[["SmokeShell",3,1]]],["V_HarnessO_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],["B_FieldPack_ocamo",[["FirstAidKit",10],["Medikit",1]]],"H_HelmetO_ocamo","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_T_Soldier_F",[["SmokeShell",3,1]]],["V_HarnessO_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],["B_FieldPack_ghex_F",[["FirstAidKit",10],["Medikit",1]]],"H_HelmetO_ghex_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_blk_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_580x42_Mag_F",30],[],""],[],[],["U_O_R_Gorka_01_F",[["SmokeShell",3,1]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",5,30]]],["B_FieldPack_green_F",[["FirstAidKit",10],["Medikit",1]]],"H_HelmetAggressor_cover_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_556x45_Stanag",30],[],""],[],[],["U_I_CombatUniform",[["SmokeShell",3,1]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_556x45_Stanag",5,30]]],["B_AssaultPack_dgtl",[["FirstAidKit",10],["Medikit",1]]],"H_HelmetIA","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["SmokeShell",3,1]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_545x39_Mag_F",5,30]]],["B_FieldPack_khk",[["FirstAidKit",10],["Medikit",1]]],"H_Cap_tan","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","acc_pointer_IR","optic_ico_01_f",["30Rnd_65x39_caseless_msbs_mag",30],[],""],[],[],["U_I_E_Uniform_01_sweater_F",[["SmokeShell",3,1]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",4,30]]],["B_AssaultPack_eaf_F",[["FirstAidKit",10],["Medikit",1]]],"H_HelmetHBK_headset_F","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Crewman": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MXC_F","","acc_pointer_IR","",["30Rnd_65x39_caseless_mag",30],[],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",3]]],["V_TacVest_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_mag",4,30]]],[],"H_HelmetCrew_B","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MXC_khk_F","","acc_pointer_IR","",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_TacVest_oli",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],[],"H_HelmetCrew_B","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MXC_khk_F","","acc_pointer_IR","",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["FirstAidKit",3]]],["V_TacVest_oli",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],[],"H_HelmetCrew_B","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_C_F","","acc_pointer_IR","",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_TacVest_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],[],"H_HelmetCrew_O","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_Katiba_C_F","","acc_pointer_IR","",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_TacVest_oli",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],[],"H_HelmetCrew_O_ghex_F","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_blk_F","","acc_pointer_IR","",["30Rnd_580x42_Mag_F",30],[],""],[],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",5,30]]],[],"H_Tank_black_F","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20C_F","","acc_pointer_IR","",["30Rnd_556x45_Stanag",30],[],""],[],[],["U_Tank_green_F",[["FirstAidKit",3]]],["V_Chestrig_oli",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_556x45_Stanag",5,30]]],[],"H_HelmetCrew_I","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["SmokeShell",3,1]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_545x39_Mag_F",5,30]]],[],"H_Tank_eaf_F","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","acc_pointer_IR","",["30Rnd_65x39_caseless_msbs_mag",30],[],""],[],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",5,30]]],[],"H_Tank_eaf_F","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Heli Pilot": {
-				switch (_sideOf) do {
-					case west: {
-						player setUnitLoadout [["arifle_MXC_Black_F","","","",["30Rnd_65x39_caseless_black_mag",30],[],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_HeliPilotCoveralls",[["FirstAidKit",3]]],["V_TacVest_blk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_black_mag",5,30]]],[],"H_PilotHelmetHeli_B","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_OPFOR"]];
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "Tanoa";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_C_F","","","",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_PilotCoveralls",[["FirstAidKit",3]]],["V_TacVest_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],[],"H_PilotHelmetHeli_O","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_blk_F","","","",["30Rnd_580x42_Mag_F",30],[],""],[],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_TacVest_oli",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",5,30]]],[],"H_PilotHelmetHeli_O","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20C_plain_F","","","",["30Rnd_556x45_Stanag",30],[],""],[],[],["U_I_HeliPilotCoveralls",[["FirstAidKit",3]]],["V_TacVest_oli",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_556x45_Stanag",5,30]]],[],"H_PilotHelmetHeli_I","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["SmokeShell",3,1]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_545x39_Mag_F",5,30]]],[],"H_PilotHelmetHeli_B","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","","",["30Rnd_65x39_caseless_msbs_mag",30],[],""],[],[],["U_I_E_Uniform_01_coveralls_F",[["FirstAidKit",3]]],["V_TacVest_oli",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",5,30]]],[],"H_PilotHelmetHeli_I_E","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Pilot": {
-				switch (_sideOf) do {
-					case west: {
-						player setUnitLoadout [["arifle_MXC_Black_F","","","",["30Rnd_65x39_caseless_black_mag",30],[],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_PilotCoveralls",[["FirstAidKit",1],["30Rnd_65x39_caseless_black_mag",3,30],["SmokeShellOrange",1,1]]],[],[],"H_PilotHelmetFighter_B","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-					};
-					case east: {
-						player setUnitLoadout [["arifle_Katiba_C_F","","","",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_PilotCoveralls",[["FirstAidKit",1],["SmokeShellOrange",1,1],["30Rnd_65x39_caseless_green",3,30]]],[],[],"H_PilotHelmetFighter_O","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20C_F","","","",["30Rnd_556x45_Stanag",30],[],""],[],[],["U_I_pilotCoveralls",[["FirstAidKit",1],["SmokeShellOrange",1,1],["30Rnd_556x45_Stanag",3,30]]],[],[],"H_PilotHelmetFighter_I","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_545x39_Mag_F",5,30]]],[],"H_HeadSet_black_F","G_Aviator",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","","",["30Rnd_65x39_caseless_msbs_mag",30],[],""],[],[],["U_I_pilotCoveralls",[["FirstAidKit",1],["SmokeShellOrange",1,1],["30Rnd_65x39_caseless_msbs_mag",3,30]]],[],[],"H_PilotHelmetFighter_I","",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Squad Leader": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MX_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_mag",30],[],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",3]]],["V_PlateCarrier2_rgr",[["30Rnd_65x39_caseless_mag",7,30],["HandGrenade",2,1],["SmokeShell",2,1]]],["B_RadioBag_01_mtp_F",[]],"H_HelmetB_desert","G_Tactical_Clear",["Laserdesignator","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_PlateCarrier2_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],["B_RadioBag_01_tropic_F",[]],"H_HelmetB_tna_F","G_Tactical_Clear",["Laserdesignator_01_khk_F","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_PlateCarrier2_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],["B_RadioBag_01_wdl_F",[]],"H_HelmetB_plain_wdl","G_Tactical_Clear",["Laserdesignator_01_khk_F","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_Arco_blk_F",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_HarnessO_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],["B_RadioBag_01_hex_F",[]],"H_HelmetO_ocamo","G_Balaclava_blk",["Laserdesignator_02","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_Arco_blk_F",["30Rnd_65x39_caseless_green",30],[],""],[],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_HarnessO_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],["B_RadioBag_01_ghex_F",[]],"H_HelmetO_ghex_F","G_Balaclava_blk",["Laserdesignator_02_ghex_F","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_blk_F","","acc_pointer_IR","optic_Arco_blk_F",["30Rnd_580x42_Mag_F",30],[],""],[],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_radio_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",5,30]]],["B_RadioBag_01_eaf_F",[]],"H_HelmetAggressor_cover_F","G_Balaclava_blk",["Laserdesignator_01_khk_F","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_556x45_Stanag",30],[],""],[],[],["U_I_CombatUniform",[["FirstAidKit",3]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_556x45_Stanag",5,30]]],["B_RadioBag_01_digi_F",[]],"H_HelmetIA","G_Lowprofile",["Laserdesignator_03","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_545x39_Mag_F",5,30]]],["B_RadioBag_01_hex_F",[]],"H_Cap_tan","G_Lowprofile",["Laserdesignator_02","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","acc_pointer_IR","optic_ico_01_f",["30Rnd_65x39_caseless_msbs_mag",30],[],""],[],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",5,30]]],["B_RadioBag_01_eaf_F",[]],"H_HelmetHBK_headset_F","G_Lowprofile",["Laserdesignator_01_khk_F","","","",["Laserbatteries",1],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Autorifleman": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MX_SW_Black_F","","acc_pointer_IR","optic_Holosight_blk_F",["100Rnd_65x39_caseless_black_mag",100],[],"bipod_01_F_blk"],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",3]]],["V_PlateCarrier2_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["100Rnd_65x39_caseless_black_mag",3,100]]],[],"H_HelmetB_camo","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MX_SW_khk_F","","acc_pointer_IR","optic_Holosight_khk_F",["100Rnd_65x39_caseless_khaki_mag",100],[],"bipod_01_F_blk"],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_PlateCarrier2_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["100Rnd_65x39_caseless_khaki_mag",3,100]]],[],"H_HelmetB_Enh_tna_F","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MX_SW_khk_F","","acc_pointer_IR","optic_Holosight_khk_F",["100Rnd_65x39_caseless_khaki_mag",100],[],"bipod_01_F_blk"],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["FirstAidKit",3]]],["V_PlateCarrier2_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["100Rnd_65x39_caseless_khaki_mag",3,100]]],[],"H_HelmetSpecB_wdl","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_CTARS_hex_F","","acc_pointer_IR","optic_Holosight_blk_F",["100Rnd_580x42_hex_Mag_F",100],[],""],[],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_HarnessO_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["100Rnd_580x42_hex_Mag_F",3,100]]],[],"H_HelmetO_ocamo","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_CTARS_ghex_F","","acc_pointer_IR","optic_Holosight_blk_F",["100Rnd_580x42_ghex_Mag_F",100],[],""],[],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_HarnessO_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["100Rnd_580x42_ghex_Mag_F",3,100]]],[],"H_HelmetO_ghex_F","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTARS_blk_F","","acc_pointer_IR","optic_Holosight_blk_F",["100Rnd_580x42_Mag_F",100],[],""],[],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["100Rnd_580x42_Mag_F",3,100]]],[],"H_HelmetAggressor_cover_F","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["LMG_Mk200_F","","acc_pointer_IR","optic_Holosight_blk_F",["200Rnd_65x39_cased_Box",200],[],""],[],[],["U_I_CombatUniform",[["FirstAidKit",3]]],["V_PlateCarrierIA2_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["200Rnd_65x39_cased_Box",1,200]]],["B_AssaultPack_dgtl",[["200Rnd_65x39_cased_Box",1,200]]],"H_HelmetIA","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								[["LMG_Mk200_F","","","optic_Holosight_blk_F",["200Rnd_65x39_cased_Box",200],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["200Rnd_65x39_cased_Box",2,200]]],[],"H_Cap_tan","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["LMG_Mk200_black_F","","acc_pointer_IR","optic_Holosight_blk_F",["200Rnd_65x39_cased_Box",200],[],""],[],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["200Rnd_65x39_cased_Box",2,200]]],[],"H_HelmetHBK_headset_F","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Light Anti-Tank": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MX_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_mag",30],[],""],["launch_NLAW_F","","","",["NLAW_F",1],[],""],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",3]]],["V_PlateCarrier2_rgr",[["30Rnd_65x39_caseless_mag",7,30],["HandGrenade",2,1],["SmokeShell",2,1]]],["B_AssaultPack_rgr",[["NLAW_F",1,1]]],"H_HelmetB_desert","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],["launch_NLAW_F","","","",["NLAW_F",1],[],""],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_PlateCarrier2_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],["B_AssaultPack_tna_F",[["NLAW_F",1,1]]],"H_HelmetB_tna_F","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],["launch_NLAW_F","","","",["NLAW_F",1],[],""],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["FirstAidKit",3]]],["V_PlateCarrier2_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],["B_AssaultPack_wdl_F",[["NLAW_F",1,1]]],"H_HelmetB_plain_wdl","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],[],""],["launch_RPG32_F","","","",["RPG32_F",1],[],""],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_HarnessO_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],["B_AssaultPack_ocamo",[["RPG32_F",1,1],["RPG32_HE_F",1,1]]],"H_HelmetO_ocamo","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],[],""],["launch_RPG32_ghex_F","","","",["RPG32_F",1],[],""],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_HarnessO_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],["B_FieldPack_ghex_F",[["RPG32_F",1,1],["RPG32_HE_F",1,1]]],"H_HelmetO_ghex_F","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_blk_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_580x42_Mag_F",30],[],""],["launch_RPG32_green_F","","","",["RPG32_F",1],[],""],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",5,30]]],["B_FieldPack_green_F",[["RPG32_F",1,1],["RPG32_HE_F",1,1]]],"H_HelmetAggressor_cover_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_556x45_Stanag",30],[],""],["launch_NLAW_F","","","",["NLAW_F",1],[],""],[],["U_I_CombatUniform",[["FirstAidKit",3]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_556x45_Stanag",5,30]]],["B_AssaultPack_dgtl",[["NLAW_F",1,1]]],"H_HelmetIA","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],["launch_RPG7_F","","","",["RPG7_F",1],[],""],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_545x39_Mag_F",5,30]]],["B_AssaultPack_cbr",[["RPG7_F",3,1]]],"H_Cap_tan","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","acc_pointer_IR","optic_ico_01_f",["30Rnd_65x39_caseless_msbs_mag",30],[],""],["launch_NLAW_F","","","",["NLAW_F",1],[],""],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",5,30]]],["B_AssaultPack_eaf_F",[["NLAW_F",1,1]]],"H_HelmetHBK_headset_F","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Heavy Anti-Tank": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MX_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_mag",30],[],""],["launch_B_Titan_short_F","","","",["Titan_AT",1],[],""],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",3]]],["V_PlateCarrier2_rgr",[["30Rnd_65x39_caseless_mag",7,30],["HandGrenade",2,1],["SmokeShell",2,1]]],["B_AssaultPack_rgr",[["Titan_AT",1,1],["Titan_AP",1,1]]],"H_HelmetB_desert","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],["launch_B_Titan_short_tna_F","","","",["Titan_AT",1],[],""],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_PlateCarrier2_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],["B_AssaultPack_tna_F",[["Titan_AT",1,1],["Titan_AP",1,1]]],"H_HelmetB_tna_F","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MX_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],[],""],["launch_I_Titan_short_F","","","",["Titan_AT",1],[],""],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["FirstAidKit",3]]],["V_PlateCarrier2_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],["B_AssaultPack_wdl_F",[["Titan_AT",1,1],["Titan_AP",1,1]]],"H_HelmetB_plain_wdl","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],[],""],["launch_O_Titan_short_F","","","",["Titan_AT",1],[],""],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_HarnessO_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],["B_FieldPack_ocamo",[["Titan_AT",1,1],["Titan_AP",1,1]]],"H_HelmetO_ocamo","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_Katiba_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],[],""],["launch_O_Titan_short_ghex_F","","","",["Titan_AT",1],[],""],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_HarnessO_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30]]],["B_FieldPack_ghex_F",[["Titan_AT",1,1],["Titan_AP",1,1]]],"H_HelmetO_ghex_F","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_blk_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_580x42_Mag_F",30],[],""],["launch_I_Titan_short_F","","","",["Titan_AT",1],[],""],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",5,30]]],["B_FieldPack_green_F",[["Titan_AT",1,1],["Titan_AP",1,1]]],"H_HelmetAggressor_cover_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_556x45_Stanag",30],[],""],["launch_I_Titan_short_F","","","",["Titan_AT",1],[],""],[],["U_I_CombatUniform",[["FirstAidKit",3]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_556x45_Stanag",5,30]]],["B_AssaultPack_dgtl",[["Titan_AT",1,1],["Titan_AP",1,1]]],"H_HelmetIA","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],["launch_MRAWS_sand_F","","","",["MRAWS_HEAT_F",1],[],""],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_545x39_Mag_F",5,30]]],["B_AssaultPack_cbr",[["MRAWS_HEAT_F",2,1],["MRAWS_HE_F",1,1]]],"H_Cap_tan","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_F","","acc_pointer_IR","optic_ico_01_f",["30Rnd_65x39_caseless_msbs_mag",30],[],""],["launch_I_Titan_short_F","","","",["Titan_AT",1],[],""],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",5,30]]],["B_AssaultPack_eaf_F",[["Titan_AT",1,1],["Titan_AP",1,1]]],"H_HelmetHBK_headset_F","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Marksman": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MXM_F","","acc_pointer_IR","optic_DMS",["30Rnd_65x39_caseless_mag",30],[],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",3]]],["V_PlateCarrier1_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_mag",5,30]]],[],"H_Booniehat_khk_hs","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MXM_khk_F","","acc_pointer_IR","optic_DMS",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_PlateCarrier1_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],[],"H_Booniehat_tna_F","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MXM_khk_F","","acc_pointer_IR","optic_DMS",["30Rnd_65x39_caseless_khaki_mag",30],[],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["FirstAidKit",3]]],["V_PlateCarrier1_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30]]],[],"H_Booniehat_wdl","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["srifle_DMR_07_blk_F","","","optic_DMS",["20Rnd_650x39_Cased_Mag_F",20],[],""],[],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_HarnessO_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["20Rnd_650x39_Cased_Mag_F",6,20]]],[],"H_Cap_brn_SPECOPS","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["srifle_DMR_07_ghex_F","","","optic_DMS_ghex_F",["20Rnd_650x39_Cased_Mag_F",20],[],""],[],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_HarnessO_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["20Rnd_650x39_Cased_Mag_F",5,20]]],[],"H_Cap_grn","G_Bandanna_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["srifle_DMR_07_blk_F","","","optic_DMS",["20Rnd_650x39_Cased_Mag_F",20],[],""],[],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["20Rnd_650x39_Cased_Mag_F",5,20]]],[],"H_Watchcap_camo","G_Bandanna_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["srifle_DMR_03_khaki_F","","acc_pointer_IR","optic_DMS",["20Rnd_762x51_Mag",20],[],""],[],[],["U_I_CombatUniform",[["FirstAidKit",3]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["20Rnd_762x51_Mag",5,20]]],[],"H_HelmetIA","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["srifle_DMR_06_hunter_F","","","optic_DMS",["10Rnd_Mk14_762x51_Mag",10],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_Mk14_762x51_Mag",7,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_tan",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_Mark_F","","acc_pointer_IR","optic_DMS",["30Rnd_65x39_caseless_msbs_mag",30],[],""],[],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",5,30]]],[],"H_HelmetHBK_headset_F","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Grenadier": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_MX_GL_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_mag",30],["1Rnd_HE_Grenade_shell",1],""],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_tshirt",[["FirstAidKit",3]]],["V_PlateCarrierGL_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_mag",5,30],["3Rnd_HE_Grenade_shell",4,3],["3Rnd_Smoke_Grenade_shell",1,3]]],[],"H_HelmetB_light_desert","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_MX_GL_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],["1Rnd_HE_Grenade_shell",1],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_AR_F",[["FirstAidKit",3]]],["V_PlateCarrierGL_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30],["3Rnd_HE_Grenade_shell",4,3],["3Rnd_Smoke_Grenade_shell",1,3]]],[],"H_HelmetB_Light_tna_F","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MX_GL_khk_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_65x39_caseless_khaki_mag",30],["1Rnd_HE_Grenade_shell",1],""],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_tshirt_mcam_wdL_f",[["FirstAidKit",3]]],["V_PlateCarrierGL_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_khaki_mag",5,30],["3Rnd_HE_Grenade_shell",4,3],["3Rnd_Smoke_Grenade_shell",1,3]]],[],"H_HelmetB_light_wdl","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["arifle_Katiba_GL_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],["1Rnd_HE_Grenade_shell",1],""],[],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_HarnessOGL_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30],["1Rnd_HE_Grenade_shell",6,1],["1Rnd_Smoke_Grenade_shell",3,1]]],[],"H_HelmetO_ocamo","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_Katiba_GL_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_65x39_caseless_green",30],["1Rnd_HE_Grenade_shell",1],""],[],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_HarnessOGL_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_green",5,30],["1Rnd_HE_Grenade_shell",6,1],["1Rnd_Smoke_Grenade_shell",3,1]]],[],"H_HelmetO_ghex_F","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_CTAR_GL_blk_F","","acc_pointer_IR","optic_ACO_grn",["30Rnd_580x42_Mag_F",30],["1Rnd_HE_Grenade_shell",1],""],[],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",5,30],["1Rnd_HE_Grenade_shell",6,1],["1Rnd_Smoke_Grenade_shell",3,1]]],[],"H_HelmetAggressor_cover_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["arifle_Mk20_GL_F","","acc_pointer_IR","optic_Holosight_blk_F",["30Rnd_556x45_Stanag",30],["1Rnd_HE_Grenade_shell",1],""],[],[],["U_I_CombatUniform",[["FirstAidKit",3]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["1Rnd_HE_Grenade_shell",6,1],["30Rnd_556x45_Stanag",5,30],["1Rnd_Smoke_Grenade_shell",3,1]]],[],"H_HelmetIA","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]]
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_CTAR_GL_blk_F","","","",["30Rnd_580x42_Mag_F",30],["1Rnd_HE_Grenade_shell",1],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_580x42_Mag_F",6,30],["1Rnd_HE_Grenade_shell",6,1],["1Rnd_Smoke_Grenade_shell",3,1]]],[],"H_Cap_tan","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_MSBS65_GL_F","","acc_pointer_IR","optic_ico_01_f",["30Rnd_65x39_caseless_msbs_mag",30],["1Rnd_HE_Grenade_shell",1],""],[],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["30Rnd_65x39_caseless_msbs_mag",5,30],["1Rnd_HE_Grenade_shell",6,1],["1Rnd_Smoke_Grenade_shell",3,1]]],[],"H_HelmetHBK_headset_F","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Heavy Gunner": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["MMG_02_sand_F","","acc_pointer_IR","optic_Hamr",["130Rnd_338_Mag",130],[],"bipod_01_F_blk"],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam",[["FirstAidKit",3]]],["V_PlateCarrier2_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["130Rnd_338_Mag",1,130]]],["B_AssaultPack_rgr",[["130Rnd_338_Mag",1,130]]],"H_HelmetB_desert","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["MMG_02_black_F","","acc_pointer_IR","optic_Hamr",["130Rnd_338_Mag",130],[],"bipod_01_F_blk"],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_T_Soldier_F",[["FirstAidKit",3]]],["V_PlateCarrier2_tna_F",[["HandGrenade",2,1],["SmokeShell",2,1],["130Rnd_338_Mag",1,130]]],["B_AssaultPack_tna_F",[["130Rnd_338_Mag",1,130]]],"H_HelmetB_tna_F","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["MMG_02_black_F","","acc_pointer_IR","optic_Hamr",["130Rnd_338_Mag",130],[],"bipod_01_F_blk"],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_CombatUniform_mcam_wdl_f",[["FirstAidKit",3]]],["V_PlateCarrier2_wdl",[["HandGrenade",2,1],["SmokeShell",2,1],["130Rnd_338_Mag",1,130]]],["B_AssaultPack_wdl_F",[["130Rnd_338_Mag",1,130]]],"H_HelmetB_plain_wdl","G_Tactical_Clear",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["MMG_01_hex_F","","acc_pointer_IR","optic_Arco",["150Rnd_93x64_Mag",150],[],"bipod_02_F_tan"],[],[],["U_O_CombatUniform_ocamo",[["FirstAidKit",3]]],["V_HarnessO_brn",[["HandGrenade",2,1],["SmokeShell",2,1],["150Rnd_93x64_Mag",1,150]]],["B_FieldPack_ocamo",[["150Rnd_93x64_Mag",1,150]]],"H_HelmetO_ocamo","G_Balaclava_blk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["MMG_01_tan_F","","acc_pointer_IR","optic_Arco_blk_F",["150Rnd_93x64_Mag",150],[],"bipod_02_F_tan"],[],[],["U_O_T_Soldier_F",[["FirstAidKit",3]]],["V_HarnessO_ghex_F",[["HandGrenade",2,1],["SmokeShell",2,1],["150Rnd_93x64_Mag",1,150]]],["B_FieldPack_ghex_F",[["150Rnd_93x64_Mag",1,150]]],"H_HelmetO_ghex_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["arifle_RPK12_lush_F","","acc_pointer_IR","optic_Arco_AK_lush_F",["75rnd_762x39_AK12_Lush_Mag_F",75],[],""],[],[],["U_O_R_Gorka_01_F",[["FirstAidKit",3]]],["V_SmershVest_01_F",[["HandGrenade",2,1],["SmokeShell",2,1],["75rnd_762x39_AK12_Lush_Mag_F",3,75]]],[],"H_HelmetAggressor_cover_F","G_Balaclava_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["MMG_02_black_F","","acc_pointer_IR","optic_Holosight_blk_F",["130Rnd_338_Mag",130],[],"bipod_01_F_blk"],[],[],["U_I_CombatUniform",[["FirstAidKit",3]]],["V_PlateCarrierIA1_dgtl",[["HandGrenade",2,1],["SmokeShell",2,1],["130Rnd_338_Mag",1,130]]],["B_AssaultPack_dgtl",[["130Rnd_338_Mag",1,130]]],"H_HelmetIA","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["arifle_RPK12_F","","","optic_Arco_AK_blk_F",["75rnd_762x39_AK12_Mag_F",75],[],""],[],[],["U_I_C_Soldier_Bandit_3_F",[["FirstAidKit",3]]],["V_Chestrig_khk",[["HandGrenade",2,1],["SmokeShell",2,1],["75rnd_762x39_AK12_Mag_F",3,75]]],[],"H_Cap_tan","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["MMG_02_black_F","","acc_pointer_IR","optic_Hamr",["130Rnd_338_Mag",130],[],"bipod_01_F_blk"],[],[],["U_I_E_Uniform_01_sweater_F",[["FirstAidKit",3]]],["V_CarrierRigKBT_01_light_EAF_F",[["HandGrenade",2,1],["SmokeShell",2,1],["130Rnd_338_Mag",1,130]]],["B_AssaultPack_eaf_F",[["130Rnd_338_Mag",1,130]]],"H_HelmetHBK_headset_F","G_Lowprofile",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
-			};
-			case "Sniper": {
-				switch (_sideOf) do {
-					case west: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["srifle_DMR_02_F","","acc_pointer_IR","optic_AMS",["10Rnd_338_Mag",10],[],"bipod_01_F_blk"],[],["hgun_P07_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_FullGhillie_sard",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_338_Mag",5,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["srifle_DMR_02_F","","acc_pointer_IR","optic_AMS",["10Rnd_338_Mag",10],[],"bipod_01_F_blk"],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_FullGhillie_tna_F",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_338_Mag",5,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_tna_F"]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["srifle_DMR_02_F","","acc_pointer_IR","optic_AMS",["10Rnd_338_Mag",10],[],"bipod_01_F_blk"],[],["hgun_P07_khk_F","","","",["16Rnd_9x21_Mag",16],[],""],["U_B_FullGhillie_lsh",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_338_Mag",5,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch","NVGoggles_INDEP"]];
-							};
-						};
-					};
-					case east: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "Malden";
-							case "VR": {
-								player setUnitLoadout [["srifle_DMR_05_blk_F","","acc_pointer_IR","optic_AMS",["10Rnd_93x64_DMR_05_Mag",10],[],"bipod_01_F_blk"],[],[],["U_O_FullGhillie_sard",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_93x64_DMR_05_Mag",5,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Tanoa": {
-								player setUnitLoadout [["srifle_DMR_05_blk_F","","acc_pointer_IR","optic_AMS",["10Rnd_93x64_DMR_05_Mag",10],[],"bipod_01_F_blk"],[],[],["U_O_FullGhillie_tna_F",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_93x64_DMR_05_Mag",5,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["srifle_DMR_05_blk_F","","acc_pointer_IR","optic_AMS",["10Rnd_93x64_DMR_05_Mag",10],[],"bipod_01_F_blk"],[],[],["U_O_FullGhillie_lsh",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_93x64_DMR_05_Mag",5,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-					case independent: {
-						switch (worldName) do {
-							case "Altis";
-							case "Stratis";
-							case "VR": {
-								player setUnitLoadout [["srifle_DMR_02_F","","acc_pointer_IR","optic_AMS",["10Rnd_338_Mag",10],[],"bipod_01_F_blk"],[],[],["U_I_FullGhillie_sard",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_338_Mag",5,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Malden";
-							case "Tanoa": {
-								player setUnitLoadout [["srifle_DMR_05_blk_F","","acc_pointer_IR","optic_AMS",["10Rnd_93x64_DMR_05_Mag",10],[],"bipod_01_F_blk"],[],[],["U_I_L_Uniform_01_tshirt_black_F",[["FirstAidKit",2]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_93x64_DMR_05_Mag",5,10]]],[],"H_Booniehat_mgrn","G_Bandanna_oli",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-							case "Enoch": {
-								player setUnitLoadout [["srifle_DMR_02_F","","acc_pointer_IR","optic_AMS",["10Rnd_338_Mag",10],[],"bipod_01_F_blk"],[],[],["U_I_FullGhillie_lsh",[["FirstAidKit",3]]],["V_Chestrig_rgr",[["HandGrenade",2,1],["SmokeShell",2,1],["10Rnd_338_Mag",5,10]]],[],"H_Booniehat_khk_hs","G_Bandanna_khk",["Binocular","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
-							};
-						};
-					};
-				};
+			player addWeapon _rifle;
+		};
+
+		if(!isNil "_launcher") then {
+			_allMags = ([_launcher] call BIS_fnc_compatibleMagazines) apply {tolower _x};
+			private _launcherMag = selectRandom (_var select {(toLower _x) in _allMags});
+			player addMagazine _launcherMag;
+			player addWeapon _launcher;
+			for "_i" from 0 to 1 do {
+				player addMagazine _launcherMag;
 			};
 		};
+
+		if(!isNil "_pistol") then {
+			_allMags = ([_pistol] call BIS_fnc_compatibleMagazines) apply {tolower _x};
+			private _pistolMag = selectRandom (_var select {(toLower _x) in _allMags});
+			for "_i" from 0 to 1 do {
+				player addMagazine _pistolMag;
+			};
+			player addWeapon _pistol;
+		};
+
+		for "_i" from 0 to 1 do {
+			player addItemToVest "HandGrenade";
+		};
+
+		_var = missionNamespace getVariable [_variableNameItems,[]];
+		private _scopes = (_var select {((_x call BIS_fnc_itemType) # 1) == "AccessorySights"}) apply {toLower _x};
+		private _scope = "";
+		if(call MAZ_RS_fnc_isNightTime) then {
+			if("optic_nvs" in _scopes) then {
+				_scope = "optic_nvs";
+			} else {
+				_scope = selectRandom _scopes;
+			};
+		} else {
+			if("optic_nvs" in _scopes) then {
+				private _temp = [] + _scopes - ["optic_nvs"];
+				_scope = selectRandom _temp;
+			} else {
+				_scope = selectRandom _scopes;
+			};
+		};
+		private _pointer = selectRandom (_var select {((_x call BIS_fnc_itemType) # 1) == "AccessoryPointer"});
+		private _bipod = selectRandom (_var select {((_x call BIS_fnc_itemType) # 1) == "AccessoryBipod"});
+
+		if(!isNil "_scope") then {player addPrimaryWeaponItem _scope;};
+		if(!isNil "_pointer") then {player addPrimaryWeaponItem _pointer;};
+		if(!isNil "_bipod") then {player addPrimaryWeaponItem _bipod;};
+
+		if(_role == "Squad_Leader") then {
+			player addMagazine "Laserbatteries";
+			player addWeapon "LaserDesignator";
+		} else {
+			player addWeapon "Binocular";
+		};
+
+		if(_role == "Medic") then {
+			player addItemToBackpack "Medikit";
+			for "_i" from 0 to 6 do {
+				player addItemToBackpack "FirstAidKit";
+			};
+		};
+
+		if(_role == "Crewman" || _role == "Engineer") then {
+			player addItemToBackpack "ToolKit";
+		};
+		if(_role =="Engineer") then {
+			player addItem "MineDetector";
+			private _varMines = missionNamespace getVariable [_variableNameMags,[]];
+			private _mines = _varMines select {
+				((_x call BIS_fnc_itemType) # 1 in ["Mine","MineBounding","MineDirectional"])
+			};
+			for "_i" from 0 to 3 do {
+				player addMagazine (selectRandom _mines);
+			};
+		};
+	};
+
+	MAZ_RS_fnc_isNightTime = {
+		([date] call BIS_fnc_sunriseSunsetTime) params ["_sunrise","_sunset"];
+		dayTime > _sunset || dayTime < _sunrise
 	};
 
 	MAZ_RS_fnc_adjustVoiceChannels = {
@@ -2794,22 +2721,31 @@ private _value = (str {
 				case "Recruit";
 				case "Rifleman";
 				case "Medic";
-				case "Crewman";
-				case "Heli Pilot";
-				case "Pilot";
+				case "Engineer";
 				case "Autorifleman";
 				case "Light Anti-Tank";
 				case "Marksman";
 				case "Grenadier";
 				case "Heavy Gunner";
 				case "Heavy Anti-Tank";
-				case "Sniper": {
+				case "Sharpshooter": {
 					{
 						_x enableChannel [true,false];
 					}forEach [0,1,2];
 					{
 						_x enableChannel true;
 					}forEach [3,4,5];
+				};
+
+				case "Crewman";
+				case "Heli Pilot";
+				case "Pilot": {
+					{
+						_x enableChannel [true,false];
+					}forEach [0,1];
+					{
+						_x enableChannel true;
+					}forEach [2,3,4,5];
 				};
 			};
 		};
@@ -2856,7 +2792,7 @@ private _value = (str {
 			private _groupLockState = _group getVariable "BIS_dg_pri";
 			private _isLocked = _group getVariable ["MAZ_RS_roles_locked",false];
 			if(!isNil "_groupLockState") then {
-				if(_groupCount >= 8) then {
+				if(_groupCount >= MAZ_RS_MAX_PER_GROUP) then {
 					if(!_groupLockState) then {
 						_group setVariable ["MAZ_RS_roles_locked",true,true];
 						["SetPrivateState",[_group,true]] call BIS_fnc_dynamicGroups;
@@ -2891,6 +2827,29 @@ private _value = (str {
 				_group setVariable ["MAZ_RS_roles_grpCanHaveSL",true,true];
 			};
 
+			private _engineerCount = {isPlayer _x && (_x getVariable ["MAZ_RS_roles_role","Recruit"]) == "Engineer"} count (units _group);
+			if(_engineerCount >= 1) then {
+				if(_engineerCount == 1) exitWith {
+					_group setVariable ["MAZ_RS_roles_grpCanHaveEngineer",false,true];
+				};
+				while {count (_group getVariable ["MAZ_RS_GroupEngineers",[]]) > 1} do {
+					private _rolePlayers = _group getVariable "MAZ_RS_GroupEngineers";
+					private _removeID = _rolePlayers select (count _rolePlayers - 1);
+					private _remove = objNull;
+					{
+						if(getPlayerUID _x == _removeID) exitWith {
+							_remove = _x;
+						};
+					}forEach allPlayers;
+					_rolePlayers deleteAt (count _rolePlayers - 1);
+					[_remove,"Rifleman"] call MAZ_RS_fnc_forceSelectRole;
+					sleep 0.1;
+					_group setVariable ["MAZ_RS_GroupEngineers",_rolePlayers,true];
+				};
+			} else {
+				_group setVariable ["MAZ_RS_roles_grpCanHaveEngineer",true,true];
+			};
+
 			private _medicCount = {isPlayer _x && (_x getVariable ["MAZ_RS_roles_role","Recruit"]) == "Medic"} count (units _group);
 			if(_medicCount >= 2) then {
 				if(_medicCount == 2) exitWith {
@@ -2914,7 +2873,7 @@ private _value = (str {
 				_group setVariable ["MAZ_RS_roles_grpCanHaveMedic",true,true];
 			};
 
-			if(_groupCount >= 5) then {
+			if(_groupCount >= MAZ_RS_MIN_FOR_SPECIALIST) then {
 				private _specialCount = {isPlayer _x && (_x getVariable ["MAZ_RS_roles_role","Recruit"]) in MAZ_RS_specialRolesList} count (units _group);
 				if(_specialCount == 2) exitWith {
 					_group setVariable ["MAZ_RS_roles_grpCanHaveSpecial",false,true];
@@ -2940,7 +2899,7 @@ private _value = (str {
 				_group setVariable ["MAZ_RS_roles_grpCanHaveSpecial",false,true];
 			};
 
-			if(_groupCount >= 7) then {
+			if(_groupCount >= MAZ_RS_MIN_FOR_SUPPORT) then {
 				private _supportCount = {isPlayer _x && (_x getVariable ["MAZ_RS_roles_role","Recruit"]) in MAZ_RS_supportRolesList} count (units _group);
 				if(_supportCount == 1) exitWith {
 					_group setVariable ["MAZ_RS_roles_grpCanHaveSupport",false,true];
@@ -3003,6 +2962,18 @@ private _value = (str {
 				player setUnitTrait ["Medic", false];
 			};
 		};
+		
+		if(_playerRole == "Engineer") then {
+			player setUnitTrait ["explosiveSpecialist",true];
+			player setUnitTrait ["UAVHacker",true];
+		} else {
+			if(player getUnitTrait "explosiveSpecialist") then {
+				player setUnitTrait ["explosiveSpecialist", false];
+			};
+			if(player getUnitTrait "UAVHacker") then {
+				player setUnitTrait ["UAVHacker", false];
+			};
+		};
 
 		if(isNil "ZAM_SLRS_active") then {
 			if(_playerRole == "Squad Leader") then {
@@ -3021,13 +2992,13 @@ private _value = (str {
 				MAZ_RS_roles_SquadLeaderRespawnPos = nil;
 			};
 		};
-		if(_playerRole == "Squad Leader" && (leader _group != player) && alive player) then {
-			_group selectLeader player;
+		if(_playerRole == "Squad Leader" && (leader _group != player) && lifeState player != "INCAPACITATED") then {
+			[group player, player] remoteExec ["selectLeader", groupOwner group player];
 		};
 		
 		if(
-			(_playerRole in MAZ_RS_specialRolesList && (_groupCount < 5)) || 
-			(_playerRole in MAZ_RS_supportRolesList && (_groupCount < 7))
+			(_playerRole in MAZ_RS_specialRolesList && (_groupCount < MAZ_RS_MIN_FOR_SPECIALIST)) || 
+			(_playerRole in MAZ_RS_supportRolesList && (_groupCount < MAZ_RS_MIN_FOR_SUPPORT))
 		) then {
 			private _isChangedAlready = player getVariable "MAZ_RS_newRoleRespawn";
 			if(isNil "_isChangedAlready") then {
@@ -3206,12 +3177,14 @@ private _value = (str {
 		};
 		{
 			if(!(_x in _var)) then {
+				systemChat (str _x);
 				player removeItem _x;
 				_wereItemsRemoved = true;
 			};
 		}forEach (items player);
 		{
 			if(!(_x in _var)) then {
+				systemChat (str _x);
 				player unassignitem _x;
 				_wereItemsRemoved = true;
 			};
@@ -3284,7 +3257,7 @@ private _value = (str {
 				if(!isNil "_changeRole") then {
 					player setVariable ["MAZ_RS_roles_role",_changeRole,true];
 					player setVariable ["MAZ_RS_newRoleRespawn",nil,true];
-					[_changeRole] call MAZ_RS_fnc_applyDefaultRoleEquipment;
+					[_changeRole] call MAZ_RS_fnc_randomFromEquipment;
 					[format ["Your role change to %1 has taken effect.",_changeRole],"addItemOk"] call MAZ_RS_fnc_roleSystemMessage;
 				};
 				[missionNamespace, "arsenalOpened", _thisScriptedEventHandler] call BIS_fnc_removeScriptedEventHandler;
@@ -3442,6 +3415,11 @@ private _value = (str {
 			_medics deleteAt (_medics find (getPlayerUID player));
 			_group setVariable ["MAZ_RS_GroupMedics",_medics,true];
 		};
+		if(_currentRole == "Engineer" && !(_selectedRole != "Engineer")) then {
+			private _engineers = _group getVariable ["MAZ_RS_GroupEngineers",[]];
+			_engineers deleteAt (_engineers find (getPlayerUID player));
+			_group setVariable ["MAZ_RS_GroupEngineers",_engineers,true];
+		};
 		if(_currentRole == "Squad Leader" && !(_selectedRole != "Squad Leader")) then {
 			private _sls = _group getVariable ["MAZ_RS_GroupSL",[]];
 			_sls deleteAt (_sls find (getPlayerUID player));
@@ -3517,13 +3495,25 @@ private _value = (str {
 				["You cannot select this medic role!","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;
 			};
 		};
+		if(_selectedRole == "Engineer") then {
+			if(_group getVariable ["MAZ_RS_roles_grpCanHaveEngineer",false]) then {
+				player setVariable ["MAZ_RS_roles_role",_selectedRole,true];
+				[format ["Role changed to %1!",_selectedRole],"addItemOk"] call MAZ_RS_fnc_roleSystemMessage;
+				private _engineers = _group getVariable ["MAZ_RS_GroupEngineers",[]];
+				_engineers pushBack (getPlayerUID player);
+				_group setVariable ["MAZ_RS_GroupEngineers",_engineers,true];
+				_isChangedLoadout = true;
+			} else {
+				["You cannot select this engineer role!","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;
+			};
+		};
 		if(!(_selectedRole in (MAZ_RS_specialRolesList + MAZ_RS_supportRolesList + ["Squad Leader", "Medic"]))) then {
 			player setVariable ["MAZ_RS_roles_role",_selectedRole,true];
 			[format ["Role changed to %1!",_selectedRole],"addItemOk"] call MAZ_RS_fnc_roleSystemMessage;
 			_isChangedLoadout = true;
 		};
 		if((MAZ_RS_isRecentSpawn && _isChangedLoadout) || _isDifferentSide) then {
-			[_selectedRole] call MAZ_RS_fnc_applyDefaultRoleEquipment;
+			[_selectedRole] call MAZ_RS_fnc_randomFromEquipment;
 		} else {
 			if(_isChangedLoadout) then {
 				["Changes to roles will take effect next time you enter the arsenal or respawn."] call MAZ_RS_fnc_roleSystemMessage;
@@ -4096,6 +4086,8 @@ private _value = (str {
 					MAZ_RS_CommanderSupportsCooldown = false;
 				};
 			};
+			playSound3D ["a3\dubbing_f\modules\supports\misc_new_available.ogg", player, false, getPosASL player, 5, 1, 150, 0, true];
+			["HQ","Be advised. Support units are now on standby. Out."] call MAZ_RS_fnc_sendSideMessage;
 		};
 
 		MAZ_RS_fnc_getSupportPosition = {
@@ -4181,6 +4173,110 @@ private _value = (str {
 			};
 		};
 
+		MAZ_RS_fnc_callAirdrop = {
+			if(MAZ_RS_CommanderSupportsCooldown) exitWith {
+				[format ["You cannot use more Commander supports until your cooldown expires! %1 seconds left.",MAZ_RS_CommanderSupportsCooldownTimer],"addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;
+			};
+			private _pos = call MAZ_RS_fnc_getSupportPosition;
+			if(_pos isEqualTo [0,0,0]) exitWith {};
+			[300] spawn MAZ_RS_fnc_startSupportCooldown;
+
+			playSound3D ["a3\dubbing_f\modules\supports\drop_request.ogg", player, false, getPosASL player, 5, 1, 70, 0, false];
+			[player,format ["Requesting supply drop at the transmitted coordinates. (%1) Over.",mapGridPosition _pos]] call MAZ_RS_fnc_sendSideMessage;
+			[player,true] remoteExec ['setRandomLip'];
+			sleep 3.5;
+			[player,false] remoteExec ['setRandomLip'];
+			sleep (1.5 + (random 3));
+			playSound3D ["a3\dubbing_f\modules\supports\drop_acknowledged.ogg", player, false, getPosASL player, 5, 1, 150, 0, true];
+			["HQ","Affirmative, supplies en-route. Out."] call MAZ_RS_fnc_sendSideMessage;
+			
+			private _sideOf = side (group player);
+			private _grp = createGroup [_sideOf,true];
+			private _dropLoad = 'B_CargoNet_01_ammo_F';
+			private _dir = random 360;
+			private _vehPos = _pos getPos [3500,_dir + 180];
+
+			private _vehType = "";
+			private _doorAnim = "";
+			switch (_sideOf) do {
+				case west: {
+					_vehType = 'B_T_VTOL_01_vehicle_F'; 
+					_doorAnim = 'Door_1_source';
+				};
+				case "huron": {_vehType = 'B_Heli_Transport_03_F'; _doorAnim = 'Door_rear_source';};
+				case east: {_vehType = 'O_T_VTOL_02_vehicle_F'; _doorAnim = 'Door_1_source';};
+				case independent: {_vehType = 'I_Heli_Transport_02_F'; _doorAnim = 'CargoRamp_Open';};
+			};
+
+			private _result = [[_vehPos select 0,_vehPos select 1,(_pos select 2) + 300],_dir,_vehType,_grp] call BIS_fnc_spawnVehicle;
+			private _spawnedVeh = _result select 0;
+
+			waitUntil {!isNull driver _spawnedVeh};
+			_spawnedVeh flyInHeight 250;
+			_spawnedVeh setVariable ["MAZ_RS_caller",player,true];
+			_spawnedVeh addEventHandler ["Killed",{
+				params ["_unit", "_killer", "_instigator", "_useEffects"];
+				private _caller = _unit getVariable ["MAZ_RS_caller",objNull];
+				[[], {
+					playSound3D ["a3\dubbing_f\modules\supports\drop_destroyed.ogg", player, false, getPosASL player, 5, 1, 150, 0, true];
+					["HQ","Be advised. Support aircraft is unresponsive. Out."] call MAZ_RS_fnc_sendSideMessage;
+				}] remoteExec ['spawn',_caller];
+				{
+					deleteVehicle _x;
+				}forEach (crew _unit);
+			}];
+			_grp setBehaviour "CARELESS";
+
+			_spawnedVeh animateDoor [_doorAnim,1,true];
+	
+			private _wayPointMove = _grp addWaypoint [[(_pos select 0),(_pos select 1),300],0];
+			_wayPointMove setWaypointType "MOVE";
+			private _nextWaypointPos = _pos getPos [6000,_dir];
+			private _wayPointLeave = _grp addWaypoint [[(_nextWaypointPos select 0),(_nextWaypointPos select 1),300],0];
+			_wayPointLeave setWaypointType "MOVE";
+
+			waitUntil {(_spawnedVeh distance2D _pos) < 150};
+			if(!alive _spawnedVeh) exitWith {
+				sleep 120;
+				deleteVehicle _spawnedVeh;
+			};
+			sleep 1.5;
+			
+			playSound3D ["a3\dubbing_f\modules\supports\drop_accomplished.ogg", player, false, getPosASL player, 5, 1, 150, 0, true];
+			["HQ","The supplies have been dropped. Out."] call MAZ_RS_fnc_sendSideMessage;
+
+			private _dropPos = position _spawnedVeh getPos [10,getDir _spawnedVeh+180];
+			private _para = createVehicle ["B_Parachute_02_F", [0,0,300], [], 0, ""];
+			_para setPosATL [(_dropPos select 0),(_dropPos select 1),(getPosATL _spawnedVeh select 2)];
+			private _veh = createVehicle [_dropLoad, [0,0,80], [], 0, ""];
+			_veh attachTo [_para,[0,0,0]]; 
+
+			WaitUntil {((((position _veh) select 2) < 0.6) || (isNil "_para"))};
+			detach _veh;
+			_veh SetVelocity [0,0,-5];           
+			sleep 0.3;
+			_veh setPos [(position _veh) select 0, (position _veh) select 1, 0.6];
+			private _smoke = "SmokeShellRed" createVehicle position _veh;
+			_smoke attachTo [_veh,[0,0,0]];
+			private _light = "Chemlight_green" createVehicle position _veh;
+			_light attachTo [_veh,[0,0,0]];
+			detach _smoke;
+			detach _light;
+			["AmmoboxInit",[_veh,true]] spawn BIS_fnc_arsenal;
+			if(_vehType == 'B_Heli_Transport_03_F') then {
+				sleep 20;
+				{
+					deleteVehicle _x;
+				} forEach crew _spawnedVeh;
+				deleteVehicle _spawnedVeh;
+			} else {
+				{
+					deleteVehicle _x;
+				} forEach crew _spawnedVeh;
+				deleteVehicle _spawnedVeh;
+			};
+		};
+
 		MAZ_RS_fnc_callCASPlane = {
 			params ["_mode"];
 			if(MAZ_RS_CommanderSupportsCooldown) exitWith {
@@ -4195,7 +4291,7 @@ private _value = (str {
 			private _planeType = switch (side (group player)) do {
 				case west: {"B_Plane_CAS_01_F"};
 				case east: {"O_Plane_CAS_02_F"};
-				case independent: {"I_Plane_Fighter_03_F"};
+				case independent: {"I_Plane_Fighter_03_CAS_F"};
 			};
 
 			_logic setVariable ["vehicle",_planeType,true];
@@ -4350,6 +4446,7 @@ private _value = (str {
 			MAZ_RS_Support_CASPlaneGun = [player,"Call","CAS Support (Gun)",'[0] spawn MAZ_RS_fnc_callCASPlane;',""] call BIS_fnc_addCommMenuItem;
 			MAZ_RS_Support_CASPlaneMissile = [player,"Call","CAS Support (Missile)",'[1] spawn MAZ_RS_fnc_callCASPlane;',""] call BIS_fnc_addCommMenuItem;
 			MAZ_RS_Support_CASPlaneBomb = [player,"Call","CAS Support (Bomb)",'[3] spawn MAZ_RS_fnc_callCASPlane;',""] call BIS_fnc_addCommMenuItem;
+			MAZ_RS_Support_Resupply = [player,"Call","Airdrop (Supplies)",'[] spawn MAZ_RS_fnc_callAirdrop;',""] call BIS_fnc_addCommMenuItem;
 			player setVariable ["MAZ_RS_isCommander",true,true];
 		};
 
@@ -4368,6 +4465,9 @@ private _value = (str {
 			};
 			if(!isNil "MAZ_RS_Support_CASPlaneBomb") then {
 				[player,MAZ_RS_Support_CASPlaneBomb] call BIS_fnc_removeCommMenuItem;
+			};
+			if(!isNil "MAZ_RS_Support_Resupply") then {
+				[player,MAZ_RS_Support_Resupply] call BIS_fnc_removeCommMenuItem;
 			};
 			player setVariable ["MAZ_RS_isCommander",false,true];
 		};
@@ -4512,7 +4612,7 @@ private _value = (str {
 		[] spawn MAZ_RS_fnc_showFriendlyOutlinesWhenCallingSupport;
 		if(_cmdGroup getVariable ["MAZ_RS_roles_grpCanHaveSL",false]) then {
 			_unit setVariable ["MAZ_RS_roles_role","Squad Leader",true];
-			["Squad Leader"] call MAZ_RS_fnc_applyDefaultRoleEquipment;
+			["Squad Leader"] call MAZ_RS_fnc_randomFromEquipment;
 		} else {
 			["Squad Leader is taken. To act as Commander ask for the Squad Leader role.","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;
 		};
@@ -4750,14 +4850,14 @@ private _value = (str {
 				_currentRole spawn {
 					waitUntil {!isNull (findDisplay 46) && alive player};
 					sleep 0.5;
-					[_this] call MAZ_RS_fnc_applyDefaultRoleEquipment;
+					[_this] call MAZ_RS_fnc_randomFromEquipment;
 				};
 			} else {
 				if(isNil "MAZ_RS_roles_respawnLoadout") then {
 					_currentRole spawn {
 						waitUntil {!isNull (findDisplay 46) && alive player};
 						sleep 0.5;
-						[_this] call MAZ_RS_fnc_applyDefaultRoleEquipment;
+						[_this] call MAZ_RS_fnc_randomFromEquipment;
 					};
 				} else {
 					[] spawn {
@@ -4801,7 +4901,11 @@ private _value = (str {
 				[_container,_item] call MAZ_RS_fnc_dropItem;
 				player playAction "gestureNo";
 			};
-			if(_item == "Toolkit" && (_role != "Crewman" && _role != "Heli Pilot" && _role != "Engineer")) then {
+			if(_item == "ToolKit" && (_role != "Crewman" && _role != "Heli Pilot" && _role != "Engineer")) then {
+				[_container,_item] call MAZ_RS_fnc_dropItem;
+				player playAction "gestureNo";
+			};
+			if(_item == "MineDetector" && (_role != "Engineer")) then {
 				[_container,_item] call MAZ_RS_fnc_dropItem;
 				player playAction "gestureNo";
 			};
@@ -4825,7 +4929,7 @@ private _value = (str {
 				[_container,_item] call MAZ_RS_fnc_dropItem;
 				player removeWeapon _item;
 			};
-			if(_item == "Rangefinder" && (_role != "Marksman" && _role != "Sniper")) then {
+			if(_item == "Rangefinder" && (_role != "Marksman" && _role != "Sharpshooter")) then {
 				[_container,_item] call MAZ_RS_fnc_dropItem;
 				player removeWeapon _item;
 			};
@@ -4893,7 +4997,7 @@ private _value = (str {
 		sleep 0.1;
 		player createDiarySubject ["ZAM_RS_Diary","[RS] - System Info"];
 		MAZ_RS_CommanderDiaryRecord = player createDiaryRecord ["ZAM_RS_Diary",["[RS] - Ground Commander","If you see this you broke something lol"]];
-		MAZ_RS_OverviewDiaryRecord = player createDiaryRecord ["ZAM_RS_Diary",["[RS] - Roles System Overview","<font color='#db8727' size='18' face='PuristaSemibold'>Roles System Overview</font><br></br><font color='#db8727' size='16' face='PuristaMedium'>ZAM’s Roles System (RS)</font><font size='16' face='PuristaMedium'> was designed to incentivize teamplay and coordination between those in groups together. You will be (practically) forced to join a group with others as if you are alone you will be forced as a ‘Recruit’ role which has poor weaponry, no access to the arsenal, and limited ammo. You can change your role by pressing </font><font color='#db8727' size='16' face='PuristaMedium'>Ctrl + 8</font><font size='16' face='PuristaMedium'>.</font><br/><br/><font color='#db8727' size='18' face='PuristaSemibold'>Roles Breakdown</font><br/><font size='16' face='PuristaMedium'>Joining a group gives you access to all </font><font color='#db8727' size='16' face='PuristaMedium'>basic roles</font><font size='16' face='PuristaMedium'>: Rifleman, Medic (two max), Crewman, Pilots, and Squad Leader. <br/>The </font><font color='#0F9C36' size='16' face='PuristaMedium'>Specialist roles</font><font size='16' face='PuristaMedium'> are unlocked once a group has 5 members (two max): Autorifleman, Light Anti-Tank, Marksman, and Grenadier. <br/>The </font><font color='#0F789C' size='16' face='PuristaMedium'>Support roles</font><font size='16' face='PuristaMedium'> are unlocked when the group has 7 members (one max): Heavy Gunner, Heavy Anti-Tank, and Sniper. </font><br/><br/><font color='#db8727' size='18' face='PuristaSemibold'>Role Limitations</font><br/><font size='16' face='PuristaMedium'>Depending on your role you will be limited to certain equipment and weapons. In addition, if you are not a crewman or pilot role you cannot enter the respective vehicles as a crewmember. You can carry extra mags for your teammates who have different roles, however, you </font><font color='#db8727' size='16' face='PuristaMedium'>cannot pick up their weapons</font><font size='16' face='PuristaMedium'>.</font><br/><br/><font color='#db8727' size='18' face='PuristaSemibold'>Ground Commander</font><br/><font size='16' face='PuristaMedium'>Ground Commanders are Squad Leaders voted by the rest of the players. <execute expression='call MAZ_RS_fnc_switchToCommanderDiaryRecord'>More information.</execute><br/><br/><font color='#db8727' size='18' face='PuristaSemibold'>Click here to close the map.</font><font size='16' face='PuristaSemibold'><br/><executeClose expression='openMap [false,false]; MAZ_RS_isAccepted = true;'>I Understand.</executeClose><br/><executeClose expression='[] spawn MAZ_RS_fnc_IWantToLeave'>I Wish to Leave.</executeClose></font>"]];
+		MAZ_RS_OverviewDiaryRecord = player createDiaryRecord ["ZAM_RS_Diary",["[RS] - Roles System Overview","<font color='#db8727' size='18' face='PuristaSemibold'>Roles System Overview</font><br></br><font color='#db8727' size='16' face='PuristaMedium'>ZAM’s Roles System (RS)</font><font size='16' face='PuristaMedium'> was designed to incentivize teamplay and coordination between those in groups together. You will be (practically) forced to join a group with others as if you are alone you will be forced as a ‘Recruit’ role which has poor weaponry, no access to the arsenal, and limited ammo. You can change your role by pressing </font><font color='#db8727' size='16' face='PuristaMedium'>Ctrl + 8</font><font size='16' face='PuristaMedium'>.</font><br/><br/><font color='#db8727' size='18' face='PuristaSemibold'>Roles Breakdown</font><br/><font size='16' face='PuristaMedium'>Joining a group gives you access to all </font><font color='#db8727' size='16' face='PuristaMedium'>basic roles</font><font size='16' face='PuristaMedium'>: Rifleman, Medic (two max), Crewman, Pilots, and Squad Leader. <br/>The </font><font color='#0F9C36' size='16' face='PuristaMedium'>Specialist roles</font><font size='16' face='PuristaMedium'> are unlocked once a group has 5 members (two max): Autorifleman, Light Anti-Tank, Marksman, and Grenadier. <br/>The </font><font color='#0F789C' size='16' face='PuristaMedium'>Support roles</font><font size='16' face='PuristaMedium'> are unlocked when the group has 7 members (one max): Heavy Gunner, Heavy Anti-Tank, and Sharpshooter. </font><br/><br/><font color='#db8727' size='18' face='PuristaSemibold'>Role Limitations</font><br/><font size='16' face='PuristaMedium'>Depending on your role you will be limited to certain equipment and weapons. In addition, if you are not a crewman or pilot role you cannot enter the respective vehicles as a crewmember. You can carry extra mags for your teammates who have different roles, however, you </font><font color='#db8727' size='16' face='PuristaMedium'>cannot pick up their weapons</font><font size='16' face='PuristaMedium'>.</font><br/><br/><font color='#db8727' size='18' face='PuristaSemibold'>Ground Commander</font><br/><font size='16' face='PuristaMedium'>Ground Commanders are Squad Leaders voted by the rest of the players. <execute expression='call MAZ_RS_fnc_switchToCommanderDiaryRecord'>More information.</execute><br/><br/><font color='#db8727' size='18' face='PuristaSemibold'>Click here to close the map.</font><font size='16' face='PuristaSemibold'><br/><executeClose expression='openMap [false,false]; MAZ_RS_isAccepted = true;'>I Understand.</executeClose><br/><executeClose expression='[] spawn MAZ_RS_fnc_IWantToLeave'>I Wish to Leave.</executeClose></font>"]];
 		[] spawn MAZ_RS_fnc_updateCommanderDiaryRecord;
 	};
 
@@ -5282,18 +5386,20 @@ private _value = (str {
 
 	comment "Execute everywhere but server in only a multiplayer environment.";
 	if(!isServer || !isMultiplayer) then {
-		[] spawn MAZ_RS_fnc_roleSystemInitLoop;
-		[] spawn MAZ_RS_fnc_rolesSystemEventhandlers;
 		[] spawn MAZ_RS_fnc_createDiaryRecords;
 		call MAZ_RS_fnc_createRoleEquipment;
 		call MAZ_RS_fnc_rolesSystemMapEvents;
 		MAZ_RS_isAccepted = true;
+
 		[] spawn {
 			waitUntil {!isNil "MAZ_fnc_newKeybind" && !isNull (findDisplay 46)};
 			MAZ_RS_Key_ChangeRole = ["Change Role","Change your in-game role.",9,{[] call MAZ_RS_fnc_rolesSystemMenu;},false,true] call MAZ_fnc_newKeybind;
 			comment " Ctrl + 8";
 		};
+
 		if(isNull (getAssignedCuratorLogic player)) then {
+			[] spawn MAZ_RS_fnc_roleSystemInitLoop;
+			[] spawn MAZ_RS_fnc_rolesSystemEventhandlers;
 			{
 				waitUntil {alive player};
 				sleep 0.1;
@@ -5318,12 +5424,16 @@ private _value = (str {
 				}forEach [0,1,2,3,4];
 				MAZ_RS_roles_respawnLoadout = nil;
 				private _currentRole = player getVariable ["MAZ_RS_roles_role","Recruit"];
-				[_currentRole] call MAZ_RS_fnc_applyDefaultRoleEquipment;
+				[_currentRole] call MAZ_RS_fnc_randomFromEquipment;
 				if(getPlayerUID player in MAZ_RS_GroundCommanders) then {
 					[player,side (group player)] call MAZ_RS_fnc_setupRejoinCommander;
 				};
 			} spawn MAZ_RS_fnc_executeOnNextRespawn;
 		} else {
+			if(!isMultiplayer) then {
+				[] spawn MAZ_RS_fnc_roleSystemInitLoop;
+				[] spawn MAZ_RS_fnc_rolesSystemEventhandlers;
+			};
 			[] spawn MAZ_RS_fnc_zeusLoop;
 		};
 		["Roles System Initialized. Open the map for more info on the system."] call MAZ_RS_fnc_roleSystemMessage;
@@ -5345,3 +5455,19 @@ missionNamespace setVariable [_varName,_value,true];
 	_data = _data joinString "";
 	addMissionEventhandler ["EachFrame", _data];
 }] remoteExec ['spawn',0,_myJIPCode];
+
+comment "
+	Changes:
+	 - Added ability for pilots/crewmen to talk in command channel. Allowing them to have their own squads and transmit to other squad leaders.
+	 - Added the Engineer role. Currently only available on NATO Arid configs.
+	 - Added audio cue when commander supports are available again. 
+	 - Added airdrop commander support. Currently only an arsenal is available. Vehicles *may* be added. Likely not.
+	 - Changed Snipers to Sharpshooters. They should be a better fit with the squads and infantry focus.
+	 - Changed the method by which default loadouts are applied. Instead of manually made defaults, random equipment will be applied from available equipment within the config.
+	 - Fixed issue where SLs wouldn't be group leaders.
+	 - Fixed issue where SLs when downed would cause a constant change of command. TWO, TAKING COMMAND!
+	 - Fixed issue where Zeus couldn't open the arsenal or enter vehicles.
+
+	TODO: 
+	 - 
+";
