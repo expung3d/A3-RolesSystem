@@ -15,7 +15,7 @@ comment "Default CSAT Uniforms";
 		["V_HarnessO_brn","V_HarnessO_gry","V_Chestrig_khk","V_BandollierB_cbr","V_TacChestrig_cbr_F","V_Chestrig_blk","V_TacVest_blk","V_BandollierB_blk"],
 		["B_AssaultPack_ocamo"],	
 		["H_HelmetSpecO_blk","H_HelmetSpecO_ocamo","H_Bandanna_cbr","H_Bandanna_gry","H_Booniehat_khk_hs","H_Cap_brn_SPECOPS","H_HelmetO_ocamo","H_HelmetO_oucamo"],
-		["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_02_sand_F"]
+		["G_Lowprofile","G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_02_sand_F"]
 	] call MAZ_RS_fnc_createNewDefaultSideUniform;
 }forEach ["Altis","Stratis"];
 
@@ -398,11 +398,11 @@ comment "Default CSAT Roles";
 		true
 	] call MAZ_RS_fnc_createNewEquipmentForRole;
 
-	comment "Sniper";
+	comment "Sharpshooter";
 	[
 		east,
 		_x,
-		"Sniper",
+		"Sharpshooter",
 		[
 			[
 				["srifle_GM6_F","srifle_GM6_camo_F","srifle_DMR_05_blk_F","srifle_DMR_05_hex_F"],
@@ -418,12 +418,12 @@ comment "Default CSAT Roles";
 			],
 			["acc_pointer_IR","optic_NVS","optic_LRPS","optic_AMS","optic_KHS_blk","bipod_02_F_blk","bipod_02_F_hex","muzzle_snds_L"]
 		],
-		["U_O_GhillieSuit","U_O_FullGhillie_lsh","U_O_FullGhillie_sard","U_O_FullGhillie_ard"],
-		["V_Chestrig_khk","V_Chestrig_rgr"],
 		[],
 		[],
-		["G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan"],
+		[],
+		[],
+		[],
 		["Rangefinder"],
-		false
+		true
 	] call MAZ_RS_fnc_createNewEquipmentForRole;
 }forEach ["Altis","Stratis"];
