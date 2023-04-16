@@ -6,7 +6,7 @@ private _myJIPCode = "MAZ_RolesSystem_JIP";
 MAZ_RS_enabled = true;
 publicVariable 'MAZ_RS_enabled';
 
-MAZ_RS_DebugMode = true;
+MAZ_RS_DebugMode = false;
 publicVariable "MAZ_RS_DebugMode";
 
 MAZ_RS_Version = "1.4.1";
