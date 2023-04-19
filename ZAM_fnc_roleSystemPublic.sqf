@@ -9,7 +9,7 @@ publicVariable 'MAZ_RS_enabled';
 MAZ_RS_DebugMode = false;
 publicVariable "MAZ_RS_DebugMode";
 
-MAZ_RS_Version = "1.4.1";
+MAZ_RS_Version = "1.4.2";
 publicVariable "MAZ_RS_Version";
 
 MAZ_RS_GroundCommanders = ["","",""];
@@ -660,7 +660,7 @@ private _value = (str {
 				["B_Kitbag_rgr"],
 				[],
 				[],
-				["Toolkit","MineDetector"],
+				["ToolKit","MineDetector"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1113,7 +1113,7 @@ private _value = (str {
 				["B_FieldPack_ocamo"],
 				[],
 				[],
-				["Toolkit","MineDetector"],
+				["ToolKit","MineDetector"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1142,7 +1142,7 @@ private _value = (str {
 				["B_AssaultPack_ocamo"],
 				["H_HelmetCrew_O","H_Tank_black_F"],
 				["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_Red","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear","G_AirPurifyingRespirator_02_sand_F"],
-				["Toolkit"],
+				["ToolKit"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1171,7 +1171,7 @@ private _value = (str {
 				["B_Parachute","B_AssaultPack_ocamo"],
 				["H_PilotHelmetHeli_O","H_CrewHelmetHeli_O"],
 				[],
-				["Toolkit"],
+				["ToolKit"],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1565,7 +1565,7 @@ private _value = (str {
 				["B_TacticalPack_oli","B_Kitbag_rgr"],
 				[],
 				[],
-				["Toolkit","MineDetector"],
+				["ToolKit","MineDetector"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1587,14 +1587,14 @@ private _value = (str {
 						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
 						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
 				["U_Tank_green_F"],
 				["V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"],
 				[],
 				["H_HelmetCrew_I"],
 				["G_Spectacles","G_Spectacles_Tinted","G_Combat","G_Shades_Black","G_Shades_Green","G_Shades_yellow","G_Tactical_Black","G_Bandanna_blk","G_Bandanna_oli","G_Bandanna_khk","G_Bandanna_tan","G_Shades_Blue","G_Tactical_Clear"],
-				[],
+				["ToolKit"],
 				false
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -1616,7 +1616,7 @@ private _value = (str {
 						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
 						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
 				["U_I_HeliPilotCoveralls"],
 				["V_Chestrig_rgr","V_Chestrig_oli","V_TacVest_oli","V_PlateCarrierIA1_dgtl"],
@@ -1645,7 +1645,7 @@ private _value = (str {
 						["hgun_ACPC2_F","hgun_Pistol_heavy_02_F"],
 						["16Rnd_9x21_yellow_Mag","16Rnd_9x21_Mag","11Rnd_45ACP_Mag","6Rnd_45ACP_Cylinder"]
 					],
-					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F","toolkit"]
+					["optic_Aco","optic_ACO_grn","acc_flashlight","acc_flashlight_smg_01","acc_pointer_IR","optic_Holosight_blk_F","optic_Holosight_smg_blk_F"]
 				],
 				["U_I_pilotCoveralls"],
 				[],
@@ -2042,7 +2042,7 @@ private _value = (str {
 				["B_Kitbag_rgr"],
 				[],
 				[],
-				["Toolkit","MineDetector"],
+				["ToolKit","MineDetector"],
 				true
 			] call MAZ_RS_fnc_createNewEquipmentForRole;
 
@@ -3017,56 +3017,54 @@ private _value = (str {
 
 		private _wereItemsRemoved = false;
 
-		private _var = missionNamespace getVariable _variableNameItems;
+		private _var = (missionNamespace getVariable _variableNameItems) apply {toLower _x};
 		_var = _var + [""];
-		if(!(uniform player in _var)) then {
+		if(!(toLower (uniform player) in _var)) then {
 			removeUniform player;
 			_wereItemsRemoved = true;
 		};
-		if(!(vest player in _var)) then {
+		if(!(toLower (vest player) in _var)) then {
 			removeVest player;
 			_wereItemsRemoved = true;
 		};
-		if(!(headgear player in _var)) then {
+		if(!(toLower (headgear player) in _var)) then {
 			removeHeadgear player;
 			_wereItemsRemoved = true;
 		};
-		if(!(binocular player in _var)) then {
+		if(!((toLower (binocular player)) in _var)) then {
 			player removeWeapon (binocular player);
 			_wereItemsRemoved = true;
 		};
 		{
-			if(!(_x in _var)) then {
-				systemChat (str _x);
+			if(!((toLower _x) in _var)) then {
 				player removeItem _x;
 				_wereItemsRemoved = true;
 			};
 		}forEach (items player);
 		{
-			if(!(_x in _var)) then {
-				systemChat (str _x);
+			if(!((toLower _x) in _var)) then {
 				player unassignitem _x;
 				_wereItemsRemoved = true;
 			};
 		}forEach (assignedItems player);
 
-		_var = missionNamespace getVariable _variableNameWeapons;
+		_var = (missionNamespace getVariable _variableNameWeapons) apply {toLower _x};
 		_var pushBack "";
-		if(!((primaryWeapon player) in _var)) then {
+		if(!((toLower (primaryWeapon player)) in _var)) then {
 			player removeWeaponGlobal (primaryWeapon player);
 			_wereItemsRemoved = true;
 		};
-		if(!(secondaryWeapon player in _var)) then {
+		if(!((toLower (secondaryWeapon player)) in _var)) then {
 			player removeWeaponGlobal (secondaryWeapon player);
 			_wereItemsRemoved = true;
 		};
-		if(!(handgunWeapon player in _var)) then {
+		if(!((toLower (handgunWeapon player)) in _var)) then {
 			player removeWeaponGlobal (handgunWeapon player);
 			_wereItemsRemoved = true;
 		};
 
-		_var = ["B_Bergen_tna_F","B_Bergen_dgtl_F","B_Bergen_hex_F","B_Bergen_mcamo_F"];
-		if(backpack player in _var || backpack player isKindOf "Weapon_Bag_Base") then {
+		_var = ["B_Bergen_tna_F","B_Bergen_dgtl_F","B_Bergen_hex_F","B_Bergen_mcamo_F"] apply {toLower _x};
+		if((toLower (backpack player)) in _var || backpack player isKindOf "Weapon_Bag_Base") then {
 			removeBackpackGlobal player;
 			_wereItemsRemoved = true;
 		};
@@ -3367,7 +3365,7 @@ private _value = (str {
 				["You cannot select this engineer role!","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;
 			};
 		};
-		if(!(_selectedRole in (MAZ_RS_specialRolesList + MAZ_RS_supportRolesList + ["Squad Leader", "Medic"]))) then {
+		if(!(_selectedRole in (MAZ_RS_specialRolesList + MAZ_RS_supportRolesList + ["Squad Leader", "Medic", "Engineer"]))) then {
 			player setVariable ["MAZ_RS_roles_role",_selectedRole,true];
 			[format ["Role changed to %1!",_selectedRole],"addItemOk"] call MAZ_RS_fnc_roleSystemMessage;
 			_isChangedLoadout = true;
@@ -3701,7 +3699,7 @@ private _value = (str {
 			waitUntil {sleep 5; getClientState == "BRIEFING READ" || !isMultiplayer};
 			comment "PURGE!!!";
 			(findDisplay 12 displayCtrl 51) ctrlRemoveAllEventhandlers "Draw";
-			disableMapIndicators [true,false,false,false];
+			disableMapIndicators [true,true,true,false];
 			
 			maxDistanceFlagMarker3D = 1500;
 			transitionDistanceFlagMarker3D = 500;
@@ -5245,59 +5243,63 @@ private _value = (str {
 	};
 
 	comment "Execute everywhere but server in only a multiplayer environment.";
-	if(!isServer || !isMultiplayer) then {
-		[] spawn MAZ_RS_fnc_createDiaryRecords;
-		call MAZ_RS_fnc_createRoleEquipment;
-		call MAZ_RS_fnc_rolesSystemMapEvents;
-		MAZ_RS_isAccepted = true;
+	MAZ_RS_fnc_initSystem = {
+		if(!isServer || !isMultiplayer) then {
+			waitUntil {!isNull (findDisplay 46) && alive player};
+			[] spawn MAZ_RS_fnc_createDiaryRecords;
+			call MAZ_RS_fnc_createRoleEquipment;
+			call MAZ_RS_fnc_rolesSystemMapEvents;
+			MAZ_RS_isAccepted = true;
 
-		[] spawn {
-			waitUntil {!isNil "MAZ_fnc_newKeybind" && !isNull (findDisplay 46)};
-			MAZ_RS_Key_ChangeRole = ["Change Role","Change your in-game role.",9,{[] call MAZ_RS_fnc_rolesSystemMenu;},false,true] call MAZ_fnc_newKeybind;
-			comment " Ctrl + 8";
-		};
+			[] spawn {
+				waitUntil {!isNil "MAZ_fnc_newKeybind" && !isNull (findDisplay 46)};
+				MAZ_RS_Key_ChangeRole = ["Change Role","Change your in-game role.",9,{[] call MAZ_RS_fnc_rolesSystemMenu;},false,true] call MAZ_fnc_newKeybind;
+				comment " Ctrl + 8";
+			};
 
-		if(isNull (getAssignedCuratorLogic player)) then {
-			[] spawn MAZ_RS_fnc_roleSystemInitLoop;
-			[] spawn MAZ_RS_fnc_rolesSystemEventhandlers;
-			{
-				waitUntil {alive player};
-				sleep 0.1;
-				openMap [true,true];
-				waitUntil {!isNil "MAZ_RS_OverviewDiaryRecord"};
-				enableRadio true;
-				sleep 0.1;
-				MAZ_RS_isAccepted = false;
-				{
-					_x enableChannel [true,false];
-				}forEach [0,1,2,3,4];
-				["[RS] - System Info","[RS] - Roles System Overview"] call MAZ_RS_fnc_selectDiarySubject;
-				[] spawn {
-					while{!MAZ_RS_isAccepted} do {
-						titleText ["Read the information in [RS] - System Info to exit the map.","PLAIN",-1,true,false];
-						sleep 3;
-					};
-				};
-				waitUntil {MAZ_RS_isAccepted};
-				{
-					_x enableChannel [true,true];	
-				}forEach [0,1,2,3,4];
-				MAZ_RS_roles_respawnLoadout = nil;
-				private _currentRole = player getVariable ["MAZ_RS_roles_role","Recruit"];
-				[_currentRole] call MAZ_RS_fnc_randomFromEquipment;
-				if(getPlayerUID player in MAZ_RS_GroundCommanders) then {
-					[player,side (group player)] call MAZ_RS_fnc_setupRejoinCommander;
-				};
-			} spawn MAZ_RS_fnc_executeOnNextRespawn;
-		} else {
-			if(!isMultiplayer) then {
+			if(isNull (getAssignedCuratorLogic player)) then {
 				[] spawn MAZ_RS_fnc_roleSystemInitLoop;
 				[] spawn MAZ_RS_fnc_rolesSystemEventhandlers;
+				{
+					waitUntil {alive player};
+					sleep 0.1;
+					openMap [true,true];
+					waitUntil {!isNil "MAZ_RS_OverviewDiaryRecord"};
+					enableRadio true;
+					sleep 0.1;
+					MAZ_RS_isAccepted = false;
+					{
+						_x enableChannel [true,false];
+					}forEach [0,1,2,3,4];
+					["[RS] - System Info","[RS] - Roles System Overview"] call MAZ_RS_fnc_selectDiarySubject;
+					[] spawn {
+						while{!MAZ_RS_isAccepted} do {
+							titleText ["Read the information in [RS] - System Info to exit the map.","PLAIN",-1,true,false];
+							sleep 3;
+						};
+					};
+					waitUntil {MAZ_RS_isAccepted};
+					{
+						_x enableChannel [true,true];	
+					}forEach [0,1,2,3,4];
+					MAZ_RS_roles_respawnLoadout = nil;
+					private _currentRole = player getVariable ["MAZ_RS_roles_role","Recruit"];
+					[_currentRole] call MAZ_RS_fnc_randomFromEquipment;
+					if(getPlayerUID player in MAZ_RS_GroundCommanders) then {
+						[player,side (group player)] call MAZ_RS_fnc_setupRejoinCommander;
+					};
+				} spawn MAZ_RS_fnc_executeOnNextRespawn;
+			} else {
+				if(!isMultiplayer) then {
+					[] spawn MAZ_RS_fnc_roleSystemInitLoop;
+					[] spawn MAZ_RS_fnc_rolesSystemEventhandlers;
+				};
+				[] spawn MAZ_RS_fnc_zeusLoop;
 			};
-			[] spawn MAZ_RS_fnc_zeusLoop;
+			["Roles System Initialized. Open the map for more info on the system."] call MAZ_RS_fnc_roleSystemMessage;
 		};
-		["Roles System Initialized. Open the map for more info on the system."] call MAZ_RS_fnc_roleSystemMessage;
 	};
+	0 = [] spawn MAZ_RS_fnc_initSystem;
 }) splitString "";
 
 _value deleteAt (count _value - 1);
@@ -5313,20 +5315,14 @@ missionNamespace setVariable [_varName,_value,true];
 	params ["_ding"];
 	private _data = missionNamespace getVariable [_ding,[]];
 	_data = _data joinString "";
-	addMissionEventhandler ["EachFrame", _data];
+	private _id = addMissionEventhandler ["EachFrame", _data];
 }] remoteExec ['spawn',0,_myJIPCode];
 
 comment "
 	Changes:
-		- Added ability for pilots/crewmen to talk in command channel. Allowing them to have their own squads and transmit to other squad leaders.
-		- Added the Engineer role. Currently only available on NATO Arid configs.
-		- Added audio cue when commander supports are available again. 
-		- Added airdrop commander support. Currently only an arsenal is available. Vehicles *may* be added. Likely not.
-		- Changed Snipers to Sharpshooters. They should be a better fit with the squads and infantry focus.
-		- Changed the method by which default loadouts are applied. Instead of manually made defaults, random equipment will be applied from available equipment within the config.
-		- Fixed issue where SLs wouldn't be group leaders.
-		- Fixed issue where SLs when downed would cause a constant change of command. TWO, TAKING COMMAND!
-		- Fixed issue where Zeus couldn't open the arsenal or enter vehicles.
+		- Fixed issue where capitalization would cause issues with whitelisted items.
+			- This caused Engineers to not able to pickup thier toolkits, even though it was in the arsenal.
+		- Fixed issue where you could always become engineer. Regardless of current number of engineers.
 
 	TODO: 
 	 - 
