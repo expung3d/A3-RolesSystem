@@ -9,7 +9,7 @@ publicVariable 'MAZ_RS_enabled';
 MAZ_RS_DebugMode = false;
 publicVariable "MAZ_RS_DebugMode";
 
-MAZ_RS_Version = "1.4.2";
+MAZ_RS_Version = "1.4.3";
 publicVariable "MAZ_RS_Version";
 
 MAZ_RS_GroundCommanders = ["","",""];
@@ -3014,6 +3014,7 @@ private _value = (str {
 		_role = [_role] call MAZ_RS_fnc_formatRoleName;
 		private _variableNameItems = format ["MAZ_RS_%1_%2_%3_Items",side (group player),worldName,_role];
 		private _variableNameWeapons = format ["MAZ_RS_%1_%2_%3_Weapons",side (group player),worldName,_role];
+		private _variableNameMags = format ["MAZ_RS_%1_%2_%3_Mags",side (group player),worldName,_role];
 
 		private _wereItemsRemoved = false;
 
@@ -3068,6 +3069,19 @@ private _value = (str {
 			removeBackpackGlobal player;
 			_wereItemsRemoved = true;
 		};
+
+		_var = (missionNamespace getVariable _variableNameMags) apply {toLower _x};
+		{
+			private _mag = _x;
+			if(((_mag call BIS_fnc_itemType) # 1) == "Rocket" && !((toLower _mag) in _var)) then {
+				player removeMagazine _mag;
+				_wereItemsRemoved = true;
+			};
+			if(((_mag call BIS_fnc_itemType) # 0) == "Mine" && !((toLower _mag) in _var)) then {
+				player removeMagazine _mag;
+				_wereItemsRemoved = true;
+			};
+		}forEach (magazines player);
 		
 		if(_wereItemsRemoved) then {
 			["Items that weren't available to your role were removed!","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;
@@ -4738,6 +4752,9 @@ private _value = (str {
 				["You're suppressed! Changing loadouts will no longer change your equipment."] call MAZ_RS_fnc_roleSystemMessage;
 			};
 		}];
+		if(!isNil "MAZ_RS_roles_takeEH") then {
+			player removeEventHandler ["Take",MAZ_RS_roles_takeEH];
+		};
 		MAZ_RS_roles_takeEH = player addEventhandler ["Take",{
 			params ["_unit", "_container", "_item"];
 			private _role = _unit getVariable ["MAZ_RS_roles_role","Recruit"];
@@ -4754,6 +4771,16 @@ private _value = (str {
 						player playAction "gestureNo";
 					};
 				};
+			};
+			private _variableNameMags = format ["MAZ_RS_%1_%2_%3_Mags",side (group _unit),worldName,_role];
+			private _mags = missionNamespace getVariable _variableNameMags;
+			if((_item call BIS_fnc_itemType) # 0 == "Mine" && !((toLower _item) in _mags)) then {
+				[_container,_item] call MAZ_RS_fnc_dropItem;
+				player playAction "gestureNo";
+			};
+			if((_item call BIS_fnc_itemType) # 1 == "Rocket" && !((toLower _item) in _mags)) then {
+				[_container,_item] call MAZ_RS_fnc_dropItem;
+				player playAction "gestureNo";
 			};
 			if(_item == "Medikit" && _role != "Medic") then {
 				[_container,_item] call MAZ_RS_fnc_dropItem;
@@ -5319,10 +5346,9 @@ missionNamespace setVariable [_varName,_value,true];
 }] remoteExec ['spawn',0,_myJIPCode];
 
 comment "
-	Changes:
-		- Fixed issue where capitalization would cause issues with whitelisted items.
-			- This caused Engineers to not able to pickup thier toolkits, even though it was in the arsenal.
-		- Fixed issue where you could always become engineer. Regardless of current number of engineers.
+Changes:
+	- Fixed issue where players other than Engineers could equip mines.
+	- Fixed issue where Light-AT could use HEAT 75 rockets despite it not being permitted.
 
 	TODO: 
 	 - 
