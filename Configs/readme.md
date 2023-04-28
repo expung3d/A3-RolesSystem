@@ -6,6 +6,7 @@ When creating a new equipment configuration you MUST create role setups for each
 'Recruit', 
 'Rifleman', 
 'Medic', 
+'Engineer',
 'Crewman', 
 'Heli Pilot', 
 'Pilot', 
@@ -16,7 +17,7 @@ When creating a new equipment configuration you MUST create role setups for each
 'Grenadier', 
 'Heavy Gunner', 
 'Heavy Anti-Tank', 
-'Sniper'
+'Sharpshooter'
 ```
 If you don't create one for a role they will have nothing available in their arsenal and will be able to pickup ANY items.
 
