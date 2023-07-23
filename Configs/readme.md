@@ -1,6 +1,30 @@
+
 # Roles System Equipment Configuration Tutorial
 
-## General Information
+## Automated Setup With Config Editor
+This details the process for creating a config using the built in Config Editor. To open the Config Editor, go into the EDEN Editor, place down the Roles System composition, and give yourself a unit to control. To use the Config Editor, the Roles System *must* be running. Now, enter this into the debug console:
+```sqf
+[] spawn MAZ_RS_fnc_openRolesEditor;
+```
+
+![A picture of the Roles System Config Editor](https://imgur.com/rBPSQu4.png) 
+
+### Utilizing Config Editor
+
+The Config Editor automates the previously manual and tedious task of creating a Config for the Roles System. A Config is a defined item list for a faction and their associated roles. 
+
+When you first open the Config Editor you'll have no configs, which are stored on the left list. Create one by pressing Create and then giving it a name, selecting the side of the faction, and by selecting the maps it applies to by double clicking. Once saved, we can begin working on the rest of the Config.
+
+Our first step is to define the default uniform for our Config, this will allow us to cut down on repetition by instantly adding the default uniform to specific roles. Inside the default uniform you'll only be able to add items and backpacks. Select the uniform, vest, headgear, facewear, and backpacks that you'd like to give to the majority of roles. Then, select save.
+
+Lastly, we edit the individual role. Doing so we can select whether the role gets the default uniform with the checkbox at the bottom right. Then we can simply add weapons, magazines, items, and backpacks to the role's equipment. Before we move to the next role, we need to save. You'll be given a warning if you try to switch without saving, that way you don't lose progress. 
+
+Once we've setup the entire Config the way we'd like, we simply press Export Config on the left side and it will copy to our clipboard (like CTRL + C) the SQF code for the Config. We can then paste this into the `MAZ_RS_fnc_createRoleEquipment` function in our version of the Roles System, and then use the new Config.
+
+## Manual Setup
+This details the process for manual config creation. Use this if you decide to not use the built in Config Editor, or if you'd like to double check the exported config from the Config Editor.
+
+### General Information
 When creating a new equipment configuration you MUST create role setups for each of these roles:
 ```sqf
 'Recruit', 
@@ -21,9 +45,9 @@ When creating a new equipment configuration you MUST create role setups for each
 ```
 If you don't create one for a role they will have nothing available in their arsenal and will be able to pickup ANY items.
 
-## Function Information
+### Function Information
 
-## MAZ_RS_fnc_createNewDefaultSideUniform
+### MAZ_RS_fnc_createNewDefaultSideUniform
 The purpose of this function is primarily to reduce the workload on the config creator.<br/>
 These defaults can be ignored in individual roles.<br/>
 Calling this creates the following default items for the faction on the specified map:
@@ -35,7 +59,7 @@ Calling this creates the following default items for the faction on the specifie
 - Goggles
 ```
 
-### Format:
+#### Format:
 ```sqf
 [
 	Side, (west, east, independent)
@@ -48,11 +72,11 @@ Calling this creates the following default items for the faction on the specifie
 ] call MAZ_RS_fnc_createNewDefaultSideUniform;
 ```
 
-## MAZ_RS_fnc_createNewEquipmentForRole
+### MAZ_RS_fnc_createNewEquipmentForRole
 Calling this creates the role equipment for the specific role.<br/>
 This includes the weapons, attachments, additional uniform items, additional items (LaserDesignator, Rangefinder, Medikit, Toolkit).
 
-### Format:
+#### Format:
 ```sqf
 [
 	Side, (west, east, independent)
@@ -86,9 +110,9 @@ This includes the weapons, attachments, additional uniform items, additional ite
 ] call MAZ_RS_fnc_createNewEquipmentForRole;
 ```
 
-## Examples of Function Calls
+### Examples of Function Calls
 
-## MAZ_RS_fnc_createNewDefaultSideUniform
+### MAZ_RS_fnc_createNewDefaultSideUniform
 ```sqf
 [
 	west,
@@ -111,7 +135,7 @@ This includes the weapons, attachments, additional uniform items, additional ite
 ] call MAZ_RS_fnc_createNewDefaultSideUniform;
 ```
 
-## MAZ_RS_fnc_createNewEquipmentForRole
+### MAZ_RS_fnc_createNewEquipmentForRole
 ```sqf
 [
 	west,
