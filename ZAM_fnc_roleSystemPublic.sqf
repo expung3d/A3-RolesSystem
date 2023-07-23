@@ -1,3 +1,7 @@
+if(!isNull (findDisplay 312) && {!isNil "this"} && {!isNull this}) then {
+	deleteVehicle this;
+};
+
 if (missionNamespace getVariable ["MAZ_RS_enabled",false]) exitWith {["The Roles System is already running!","addItemFailed"] call MAZ_RS_fnc_roleSystemMessage;};
 
 private _varName = "MAZ_System_RolesSystem";
@@ -9,7 +13,7 @@ publicVariable 'MAZ_RS_enabled';
 MAZ_RS_DebugMode = false;
 publicVariable "MAZ_RS_DebugMode";
 
-MAZ_RS_Version = "1.4.3";
+MAZ_RS_Version = "1.5.2";
 publicVariable "MAZ_RS_Version";
 
 MAZ_RS_GroundCommanders = ["","",""];
@@ -2379,7 +2383,7 @@ private _value = (str {
 		private _side = side (group player);
 		private _map = worldName;
 		_role = [_role] call MAZ_RS_fnc_formatRoleName;
-		player setUnitLoadout [[],[],[],[],[],[],"","",["","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]];
+		comment 'player setUnitLoadout [[],[],[],[],[],[],"","",["","","","",[],[],""],["ItemMap","ItemGPS","ItemRadio","ItemCompass","ItemWatch",""]]';
 		private _variableNameItems = format ["MAZ_RS_%1_%2_%3_Items",_side,_map,_role];
 		private _variableNameWeapons = format ["MAZ_RS_%1_%2_%3_Weapons",_side,_map,_role];
 		private _variableNameMags = format ["MAZ_RS_%1_%2_%3_Mags",_side,_map,_role];
@@ -2391,11 +2395,34 @@ private _value = (str {
 		private _headgear = _var select {((_x call BIS_fnc_itemType) # 1) == "Headgear"};
 		private _glasses = _var select {((_x call BIS_fnc_itemType) # 1) == "Glasses"};
 
-		player forceAddUniform (selectRandom _uniforms);
-		player addVest (selectRandom _vests);
-		player addHeadgear (selectRandom _headgear);
-		player addGoggles (selectRandom _glasses);
-		for "_i" from 0 to 2 do {
+		if !(uniform player in _var) then {
+			private _items = uniformItems player;
+			removeUniform player;
+			player forceAddUniform (selectRandom _uniforms);
+			{if(_x in _var) then {player addItemToUniform _x;}}forEach _items;
+		};
+		if !(vest player in _var) then {
+			private _items = vestItems player;
+			removeVest player;
+			player addVest (selectRandom _vests);
+			{if(_x in _var) then {player addItemToUniform _x;}}forEach _items;
+		};
+		if !(headgear player in _var) then {
+			removeHeadgear player;
+			player addHeadgear (selectRandom _headgear);
+		};
+		if !(goggles player in _var) then {
+			removeGoggles player;
+			player addGoggles (selectRandom _glasses);
+		};
+
+		private _fakCount = {_x == "FirstAidKit"} count (items player);
+		if(_fakCount > 3) then {
+			for "_i" from _fakCount to 2 step -1 do {
+				player removeitem "FirstAidKit";
+			};
+		};
+		for "_i" from _fakCount to 2 do {
 			player addItemToUniform "FirstAidKit";
 		};
 		if(call MAZ_RS_fnc_isNightTime) then {
@@ -2404,8 +2431,15 @@ private _value = (str {
 			player assignItem _nvgs;
 		};
 
+		private _itemsVar = _var;
+
 		_var = missionNamespace getVariable [_variableNameBackpack,[]];
-		player addBackpackGlobal (selectRandom _var);
+		if !(backpack player in _var) then {
+			private _items = backpackItems player;
+			removeBackpackGlobal player;
+			player addBackpackGlobal (selectRandom _var);
+			{if(_x in _itemsVar) then {player addItemToBackpack _x;}}forEach _items;
+		};
 
 		_var = missionNamespace getVariable [_variableNameWeapons,[]];
 		private _rifles = _var select {
@@ -2420,11 +2454,31 @@ private _value = (str {
 		};
 		private _pistols = _var select {((_x call BIS_fnc_itemType) # 1) == "Handgun"};
 		
-		private _rifle = selectRandom _rifles;
-		private _launcher = selectRandom _launchers;
-		private _pistol = selectRandom _pistols;
+		private _rifle = primaryWeapon player;
+		private _mags = [_rifle] call BIS_fnc_compatibleMagazines;
+		{if((toLower _x) in _mags) then {player removeMagazine _x;};}forEach (magazines player);
+		if !(_rifle in _var) then {
+			player removeWeapon _rifle;
+			_rifle = selectRandom _rifles;
+		};
+		private _launcher = secondaryWeapon player;
+		private _mags = [_launcher] call BIS_fnc_compatibleMagazines;
+		{if((toLower _x) in _mags) then {player removeMagazine _x;}}forEach (magazines player);
+		if !(_launcher in _var) then {
+			player removeWeapon _launcher;
+			_launcher = selectRandom _launchers;
+		};
+		
+		private _pistol = handgunWeapon player;
+		private _mags = [_pistol] call BIS_fnc_compatibleMagazines;
+		{if((toLower _x) in _mags) then {player removeMagazine _x;}}forEach (magazines player);
+		if !(_pistol in _var) then {
+			player removeWeapon _pistol;
+			_pistol = selectRandom _pistols;
+		};
 
 		_var = missionNamespace getVariable [_variableNameMags,[]];
+		(primaryWeaponItems player) params ["_supp","_laser","_optic","_under"];
 		if(!isNil "_rifle") then {
 			private _allMags = ([_rifle] call BIS_fnc_compatibleMagazines) apply {tolower _x};
 			private _rifleMag = selectRandom (_var select {
@@ -2481,26 +2535,34 @@ private _value = (str {
 		_var = missionNamespace getVariable [_variableNameItems,[]];
 		private _scopes = (_var select {((_x call BIS_fnc_itemType) # 1) == "AccessorySights"}) apply {toLower _x};
 		private _scope = "";
-		if(call MAZ_RS_fnc_isNightTime) then {
-			if("optic_nvs" in _scopes) then {
+		if("optic_nvs" in _scopes) then {
+			if(call MAZ_RS_fnc_isNightTime) then {
 				_scope = "optic_nvs";
 			} else {
-				_scope = selectRandom _scopes;
-			};
-		} else {
-			if("optic_nvs" in _scopes) then {
 				private _temp = [] + _scopes - ["optic_nvs"];
 				_scope = selectRandom _temp;
-			} else {
-				_scope = selectRandom _scopes;
 			};
+		} else {
+			_scope = selectRandom _scopes;
 		};
 		private _pointer = selectRandom (_var select {((_x call BIS_fnc_itemType) # 1) == "AccessoryPointer"});
 		private _bipod = selectRandom (_var select {((_x call BIS_fnc_itemType) # 1) == "AccessoryBipod"});
 
-		if(!isNil "_scope") then {player addPrimaryWeaponItem _scope;};
-		if(!isNil "_pointer") then {player addPrimaryWeaponItem _pointer;};
-		if(!isNil "_bipod") then {player addPrimaryWeaponItem _bipod;};
+		if !(_optic in _var) then {
+			if(!isNil "_scope") then {player addPrimaryWeaponItem _scope;};
+		} else {
+			player addPrimaryWeaponItem _optic;
+		};
+		if !(_laser in _var) then {
+			if(!isNil "_pointer") then {player addPrimaryWeaponItem _pointer;};
+		} else {
+			player addPrimaryWeaponItem _laser;
+		};
+		if !(_under in _var) then {
+			if(!isNil "_bipod") then {player addPrimaryWeaponItem _bipod;};
+		} else {
+			player addPrimaryWeaponItem _under;
+		};
 
 		if(_role == "Squad_Leader") then {
 			player addMagazine "Laserbatteries";
@@ -2530,6 +2592,1105 @@ private _value = (str {
 			};
 		};
 	};
+	
+	comment "Roles Editor";
+		MAZ_RS_fnc_openRolesEditor = {
+			disableSerialization;
+			with uiNamespace do {
+				GUI_GRID_H = ((((safeZoneW / safeZoneH) min 1.2) / 1.2) / 25);
+				MAZ_RS_rolesConfigEditor = (findDisplay 46) createDisplay "RscDisplayEmpty";
+
+				MAZ_RS_configEditorSelectedConfig = 0;
+				MAZ_RS_configEditorSelectedRole = 0;
+				MAZ_RS_configEditorItemType = "weapon";
+
+				MAZ_RS_configEditorItems = [];
+				MAZ_RS_configEditorWeapons = [];
+				MAZ_RS_configEditorMags = [];
+				MAZ_RS_configEditorBags = [];
+				MAZ_RS_configUseDefault = false;
+
+				MAZ_RS_configSaved = true;
+				MAZ_RS_configLost = false;
+
+				private _color = ["GUI", "BCG_RGB"] call BIS_fnc_displayColorGet;
+				comment "Visual elements";
+					_editorBG = MAZ_RS_rolesConfigEditor ctrlCreate ["RscPicture", 1200];
+					_editorBG ctrlSetText "#(argb,8,8,3)color(0,0,0,0.7)";
+					_editorBG ctrlSetPosition [0.324687 * safezoneW + safezoneX, 0.269 * safezoneH + safezoneY, 0.350625 * safezoneW, 0.462 * safezoneH];
+					_editorBG ctrlCommit 0;
+
+					_configListBG = MAZ_RS_rolesConfigEditor ctrlCreate ["RscPicture", 1201];
+					_configListBG ctrlSetText "#(argb,8,8,3)color(0,0,0,0.7)";
+					_configListBG ctrlSetPosition [0.231875 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.0876563 * safezoneW, 0.44 * safezoneH];
+					_configListBG ctrlCommit 0;
+
+					_roleSelection = MAZ_RS_rolesConfigEditor ctrlCreate ["RscPicture", 1202];
+					_roleSelection ctrlSetText "#(argb,8,8,3)color(0,0,0,0.7)";
+					_roleSelection ctrlSetPosition [0.680469 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.0876563 * safezoneW, 0.44 * safezoneH];
+					_roleSelection ctrlCommit 0;
+
+					_RscText_1000 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1000];
+					_RscText_1000 ctrlSetText "Available Items:";
+					_RscText_1000 ctrlSetPosition [0.335 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.149531 * safezoneW, 0.022 * safezoneH];
+					_RscText_1000 ctrlCommit 0;
+
+					_RscText_1001 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1001];
+					_RscText_1001 ctrlSetText "Selected Items:";
+					_RscText_1001 ctrlSetPosition [0.515469 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.149531 * safezoneW, 0.022 * safezoneH];
+					_RscText_1001 ctrlCommit 0;
+
+					_RscText_1002 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1002];
+					_RscText_1002 ctrlSetText " Use default uniform";
+					_RscText_1002 ctrlSetPosition [0.690781 * safezoneW + safezoneX, 0.687 * safezoneH + safezoneY, 0.0721875 * safezoneW, 0.022 * safezoneH];
+					_RscText_1002 ctrlCommit 0;
+
+					_RscText_1003 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1003];
+					_RscText_1003 ctrlSetText "Roles System - Config Editor";
+					_RscText_1003 ctrlSetPosition [0.324687 * safezoneW + safezoneX, 0.247 * safezoneH + safezoneY, 0.350625 * safezoneW, 0.022 * safezoneH];
+					_RscText_1003 ctrlSetBackgroundColor _color;
+					_RscText_1003 ctrlSetFontHeight 1 * GUI_GRID_H;
+					_RscText_1003 ctrlCommit 0;
+
+					_RscFrame_1800 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscFrame", 1800];
+					_RscFrame_1800 ctrlSetPosition [0.329844 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.340312 * safezoneW, 0.374 * safezoneH];
+					_RscFrame_1800 ctrlCommit 0;
+
+					_RscFrame_1801 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscFrame", 1801];
+					_RscFrame_1801 ctrlSetPosition [0.329844 * safezoneW + safezoneX, 0.665 * safezoneH + safezoneY, 0.232031 * safezoneW, 0.055 * safezoneH];
+					_RscFrame_1801 ctrlCommit 0;
+
+					_RscFrame_1802 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscFrame", 1802];
+					_RscFrame_1802 ctrlSetPosition [0.231875 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.0876563 * safezoneW, 0.44 * safezoneH];
+					_RscFrame_1802 ctrlCommit 0;
+
+					_RscFrame_1803 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscFrame", 1803];
+					_RscFrame_1803 ctrlSetPosition [0.680469 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.0876563 * safezoneW, 0.44 * safezoneH];
+					_RscFrame_1803 ctrlCommit 0;
+
+					_RscFrame_1804 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscFrame", 1804];
+					_RscFrame_1804 ctrlSetPosition [0.561875 * safezoneW + safezoneX, 0.665 * safezoneH + safezoneY, 0.108281 * safezoneW, 0.055 * safezoneH];
+					_RscFrame_1804 ctrlCommit 0;
+
+					_RscPicture_1203 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscPicture", 1203];
+					_RscPicture_1203 ctrlSetText "#(argb,8,8,3)color(0,0,0,0.7)";
+					_RscPicture_1203 ctrlSetPosition [0.0823437 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.144375 * safezoneW, 0.33 * safezoneH];
+					_RscPicture_1203 ctrlCommit 0;
+
+					_RscText_1007 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1007];
+					_RscText_1007 ctrlSetText "Config Name:";
+					_RscText_1007 ctrlSetPosition [0.0875 * safezoneW + safezoneX, 0.291 * safezoneH + safezoneY, 0.0567187 * safezoneW, 0.022 * safezoneH];
+					_RscText_1007 ctrlCommit 0;
+
+					_RscText_1005 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1005];
+					_RscText_1005 ctrlSetText "Config Side:";
+					_RscText_1005 ctrlSetPosition [0.0875 * safezoneW + safezoneX, 0.346 * safezoneH + safezoneY, 0.0567187 * safezoneW, 0.022 * safezoneH];
+					_RscText_1005 ctrlCommit 0;
+
+					_RscText_1008 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1008];
+					_RscText_1008 ctrlSetText "Config Map(s):";
+					_RscText_1008 ctrlSetPosition [0.0875 * safezoneW + safezoneX, 0.401 * safezoneH + safezoneY, 0.0567187 * safezoneW, 0.022 * safezoneH];
+					_RscText_1008 ctrlCommit 0;
+
+					_RscFrame_1805 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscFrame", 1805];
+					_RscFrame_1805 ctrlSetPosition [0.0823437 * safezoneW + safezoneX, 0.28 * safezoneH + safezoneY, 0.144375 * safezoneW, 0.33 * safezoneH];
+					_RscFrame_1805 ctrlCommit 0;
+
+					_RscText_1009 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1009];
+					_RscText_1009 ctrlSetText "Configs";
+					_RscText_1009 ctrlSetPosition [0.231875 * safezoneW + safezoneX, 0.258 * safezoneH + safezoneY, 0.0876563 * safezoneW, 0.022 * safezoneH];
+					_RscText_1009 ctrlSetTextColor [1,1,1,1];
+					_RscText_1009 ctrlSetBackgroundColor _color;
+					_RscText_1009 ctrlCommit 0;
+
+					_RscText_1010 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1010];
+					_RscText_1010 ctrlSetText "Config Settings";
+					_RscText_1010 ctrlSetPosition [0.0823437 * safezoneW + safezoneX, 0.258 * safezoneH + safezoneY, 0.144375 * safezoneW, 0.022 * safezoneH];
+					_RscText_1010 ctrlSetTextColor [1,1,1,1];
+					_RscText_1010 ctrlSetBackgroundColor _color;
+					_RscText_1010 ctrlCommit 0;
+
+					_RscText_1011 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscText", 1011];
+					_RscText_1011 ctrlSetText "Roles";
+					_RscText_1011 ctrlSetPosition [0.680469 * safezoneW + safezoneX, 0.258 * safezoneH + safezoneY, 0.0876563 * safezoneW, 0.022 * safezoneH];
+					_RscText_1011 ctrlSetTextColor [1,1,1,1];
+					_RscText_1011 ctrlSetBackgroundColor _color;
+					_RscText_1011 ctrlCommit 0;
+
+					_RscPicture_1204 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscPicture", 1204];
+					_RscPicture_1204 ctrlSetText "#(argb,8,8,3)color(0,0,0,0.7)";
+					_RscPicture_1204 ctrlSetPosition [0.082344 * safezoneW + safezoneX, 0.621 * safezoneH + safezoneY, 0.144375 * safezoneW, 0.055 * safezoneH];
+					_RscPicture_1204 ctrlCommit 0;
+
+					_RscFrame_1806 = MAZ_RS_rolesConfigEditor ctrlCreate ["RscFrame",1806];
+					_RscFrame_1806 ctrlSetPosition [0.082344 * safezoneW + safezoneX, 0.621 * safezoneH + safezoneY, 0.144375 * safezoneW, 0.055 * safezoneH];
+					_RscFrame_1806 ctrlCommit 0;
+
+				comment "Configs elements";
+
+					MAZ_RS_configsList = MAZ_RS_rolesConfigEditor ctrlCreate ["RscListbox", 1500];
+					MAZ_RS_configsList ctrlSetPosition [0.237031 * safezoneW + safezoneX, 0.291 * safezoneH + safezoneY, 0.0773437 * safezoneW, 0.352 * safezoneH];
+					MAZ_RS_configsList ctrlAddEventHandler ["LbDblClick", {
+						params ["_control","_index"];
+						[_index] call MAZ_RS_fnc_selectConfig;
+					}];
+					MAZ_RS_configsList ctrlCommit 0;
+
+					MAZ_RS_configCreate = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2409];
+					MAZ_RS_configCreate ctrlSetStructuredText parseText "<t align='center' size='0.95'>Create</t>";
+					MAZ_RS_configCreate ctrlSetPosition [0.237031 * safezoneW + safezoneX, 0.654 * safezoneH + safezoneY, 0.0773437 * safezoneW, 0.022 * safezoneH];
+					MAZ_RS_configCreate ctrlSetFont "PuristaMedium";
+					MAZ_RS_configCreate ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						call MAZ_RS_fnc_createNewConfig;
+					}];
+					MAZ_RS_configCreate ctrlCommit 0;
+
+					MAZ_RS_configDelete = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2400];
+					MAZ_RS_configDelete ctrlSetStructuredText parseText "<t align='center' size='0.95'>Delete</t>";
+					MAZ_RS_configDelete ctrlSetPosition [0.237031 * safezoneW + safezoneX, 0.687 * safezoneH + safezoneY, 0.0773437 * safezoneW, 0.022 * safezoneH];
+					MAZ_RS_configDelete ctrlSetFont "PuristaMedium";
+					MAZ_RS_configDelete ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						private _index = lbCurSel (uiNamespace getVariable "MAZ_RS_configsList");
+						["delete",[_index]] call MAZ_RS_fnc_saveConfig;
+					}];
+					MAZ_RS_configDelete ctrlCommit 0;
+
+				comment "Roles elements";
+
+					MAZ_RS_rolesListbox = MAZ_RS_rolesConfigEditor ctrlCreate ["RscListbox", 1501];
+					MAZ_RS_rolesListbox ctrlSetPosition [0.685625 * safezoneW + safezoneX, 0.291 * safezoneH + safezoneY, 0.0773437 * safezoneW, 0.385 * safezoneH];
+					MAZ_RS_rolesListbox ctrlAddEventHandler ["LbDblClick", {
+						params ["_control","_index"];
+						if !(uiNamespace getVariable "MAZ_RS_configSaved") exitWith {
+							playSound "addItemFailed";
+							systemChat "[ Roles System ] : You haven't saved your current config. If you switch roles or config, changes will not be saved.";
+							uiNamespace setVariable ["MAZ_RS_configSaved",true];
+							uiNamespace setVariable ["MAZ_RS_configLost",true];
+						};
+						if (uiNamespace getVariable "MAZ_RS_configLost") then {
+							playSound "addItemFailed";
+							systemChat "[ Roles System ] : Previous changes to role or config lost.";
+						};
+						with uiNamespace do {
+							MAZ_RS_rolesListbox lbSetColor [MAZ_RS_configEditorSelectedRole,[1,1,1,1]];
+							MAZ_RS_rolesListbox lbSetColor [_index,[0.85,0.4,0,1]];
+							MAZ_RS_configEditorSelectedRole = _index;
+						};
+						[_index] call MAZ_RS_fnc_setRoleVariables;
+					}];
+					MAZ_RS_rolesListbox ctrlCommit 0;
+
+					MAZ_RS_useDefaultCheckbox = MAZ_RS_rolesConfigEditor ctrlCreate ["RscCheckbox", 2800];
+					MAZ_RS_useDefaultCheckbox ctrlSetPosition [0.685625 * safezoneW + safezoneX, 0.687 * safezoneH + safezoneY, 0.0103125 * safezoneW, 0.022 * safezoneH];
+					MAZ_RS_useDefaultCheckbox ctrlAddEventHandler ["CheckedChanged", {
+						params ["_control","_checked"];
+						if(_checked == 1) then {
+							uiNamespace setVariable ["MAZ_RS_configUseDefault",true];
+						} else {
+							uiNamespace setVariable ["MAZ_RS_configUseDefault",false];
+						};
+					}];
+					MAZ_RS_useDefaultCheckbox ctrlCommit 0;
+
+				comment "Main editor elements";
+
+					MAZ_RS_closeEditorButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2401];
+					MAZ_RS_closeEditorButton ctrlSetStructuredText parseText "<t size='0.15'>&#160;</t><br/><t align='center' size='0.95'>Close</t>";
+					MAZ_RS_closeEditorButton ctrlSetPosition [0.618594 * safezoneW + safezoneX, 0.676 * safezoneH + safezoneY, 0.0464063 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_closeEditorButton ctrlSetFont "PuristaMedium";
+					MAZ_RS_closeEditorButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						with uiNamespace do {
+							MAZ_RS_rolesConfigEditor closeDisplay 0;
+						};
+					}];
+					MAZ_RS_closeEditorButton ctrlCommit 0;
+
+					MAZ_RS_saveEditorButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2402];
+					MAZ_RS_saveEditorButton ctrlSetStructuredText parseText "<t size='0.15'>&#160;</t><br/><t align='center' size='0.95'>Save</t>";
+					MAZ_RS_saveEditorButton ctrlSetPosition [0.567031 * safezoneW + safezoneX, 0.676 * safezoneH + safezoneY, 0.0464063 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_saveEditorButton ctrlSetFont "PuristaMedium";
+					MAZ_RS_saveEditorButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						["update",[]] call MAZ_RS_fnc_saveConfig;
+					}];
+					MAZ_RS_saveEditorButton ctrlCommit 0;
+
+					MAZ_RS_weaponSelectionButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2403];
+					MAZ_RS_weaponSelectionButton ctrlSetStructuredText parseText "<t size='0.15'>&#160;</t><br/><t align='center' size='0.95'>Weapons</t>";
+					MAZ_RS_weaponSelectionButton ctrlSetPosition [0.335 * safezoneW + safezoneX, 0.676 * safezoneH + safezoneY, 0.0515625 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_weaponSelectionButton ctrlSetFont "PuristaMedium";
+					MAZ_RS_weaponSelectionButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						if((uiNamespace getVariable "MAZ_RS_configEditorSelectedRole") != (lbSize (uiNamespace getVariable "MAZ_RS_rolesListbox")) - 1) then {
+							uiNamespace setVariable ["MAZ_RS_configEditorItemType","weapon"];
+							call MAZ_RS_fnc_fillRoleList;
+							call MAZ_RS_fnc_resetListsToTop;
+						} else {
+							systemChat "[ Roles System ] : Cannot edit weapons while editing the default uniform!";
+							playSound "addItemFailed";
+						};
+					}];
+					MAZ_RS_weaponSelectionButton ctrlCommit 0;
+
+					MAZ_RS_magazineSelectionButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2404];
+					MAZ_RS_magazineSelectionButton ctrlSetStructuredText parseText "<t size='0.15'>&#160;</t><br/><t align='center' size='0.95'>Magazines</t>";
+					MAZ_RS_magazineSelectionButton ctrlSetPosition [0.391719 * safezoneW + safezoneX, 0.676 * safezoneH + safezoneY, 0.0515625 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_magazineSelectionButton ctrlSetFont "PuristaMedium";
+					MAZ_RS_magazineSelectionButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						if((uiNamespace getVariable "MAZ_RS_configEditorSelectedRole") != (lbSize (uiNamespace getVariable "MAZ_RS_rolesListbox")) - 1) then {
+							uiNamespace setVariable ["MAZ_RS_configEditorItemType","magazine"];
+							call MAZ_RS_fnc_fillRoleList;
+							call MAZ_RS_fnc_resetListsToTop;
+						} else {
+							systemChat "[ Roles System ] : Cannot edit magazines while editing the default uniform!";
+							playSound "addItemFailed";
+						};
+					}];
+					MAZ_RS_magazineSelectionButton ctrlCommit 0;
+
+					MAZ_RS_itemSelectionButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2405];
+					MAZ_RS_itemSelectionButton ctrlSetStructuredText parseText "<t size='0.15'>&#160;</t><br/><t align='center' size='0.95'>Items</t>";
+					MAZ_RS_itemSelectionButton ctrlSetPosition [0.448438 * safezoneW + safezoneX, 0.676 * safezoneH + safezoneY, 0.0515625 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_itemSelectionButton ctrlSetFont "PuristaMedium";
+					MAZ_RS_itemSelectionButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						uiNamespace setVariable ["MAZ_RS_configEditorItemType","item"];
+						call MAZ_RS_fnc_fillRoleList;
+						call MAZ_RS_fnc_resetListsToTop;
+					}];
+					MAZ_RS_itemSelectionButton ctrlCommit 0;
+
+					MAZ_RS_backpackSelectionButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2406];
+					MAZ_RS_backpackSelectionButton ctrlSetStructuredText parseText "<t size='0.15'>&#160;</t><br/><t align='center' size='0.95'>Backpacks</t>";
+					MAZ_RS_backpackSelectionButton ctrlSetPosition [0.505156 * safezoneW + safezoneX, 0.676 * safezoneH + safezoneY, 0.0515625 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_backpackSelectionButton ctrlSetFont "PuristaMedium";
+					MAZ_RS_backpackSelectionButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						uiNamespace setVariable ["MAZ_RS_configEditorItemType","backpack"];
+						call MAZ_RS_fnc_fillRoleList;
+						call MAZ_RS_fnc_resetListsToTop;
+					}];
+					MAZ_RS_backpackSelectionButton ctrlCommit 0;
+
+					MAZ_RS_availableItemsList = MAZ_RS_rolesConfigEditor ctrlCreate ["RscListbox", 1502];
+					MAZ_RS_availableItemsList ctrlSetPosition [0.335 * safezoneW + safezoneX, 0.302 * safezoneH + safezoneY, 0.149531 * safezoneW, 0.341 * safezoneH];
+					MAZ_RS_availableItemsList ctrlAddEventHandler ["LbDblClick", {
+						call MAZ_RS_fnc_addToSelection;
+					}];
+					MAZ_RS_availableItemsList ctrlCommit 0;
+
+					MAZ_RS_selectedItemsList = MAZ_RS_rolesConfigEditor ctrlCreate ["RscListbox", 1503];
+					MAZ_RS_selectedItemsList ctrlSetPosition [0.515469 * safezoneW + safezoneX, 0.302 * safezoneH + safezoneY, 0.149531 * safezoneW, 0.341 * safezoneH];
+					MAZ_RS_selectedItemsList ctrlAddEventHandler ["LbDblClick", {
+						call MAZ_RS_fnc_removeFromSelection;
+					}];
+					MAZ_RS_selectedItemsList ctrlCommit 0;
+
+					MAZ_RS_removeFromSelectionButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2407];
+					MAZ_RS_removeFromSelectionButton ctrlSetStructuredText parseText "<t size='0.2'>&#160;</t><br/><t align='center'>&lt; </t>";
+					MAZ_RS_removeFromSelectionButton ctrlSetPosition [0.489687 * safezoneW + safezoneX, 0.401 * safezoneH + safezoneY, 0.020625 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_removeFromSelectionButton ctrlSetFont "PuristaSemibold";
+					MAZ_RS_removeFromSelectionButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						call MAZ_RS_fnc_removeFromSelection;
+					}];
+					MAZ_RS_removeFromSelectionButton ctrlCommit 0;
+
+					MAZ_RS_addToSelectionButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2408];
+					MAZ_RS_addToSelectionButton ctrlSetStructuredText parseText "<t size='0.2'>&#160;</t><br/><t align='center'>&gt; </t>";
+					MAZ_RS_addToSelectionButton ctrlSetPosition [0.489687 * safezoneW + safezoneX, 0.456 * safezoneH + safezoneY, 0.020625 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_addToSelectionButton ctrlSetFont "PuristaSemibold";
+					MAZ_RS_addToSelectionButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						call MAZ_RS_fnc_addToSelection;
+					}];
+					MAZ_RS_addToSelectionButton ctrlCommit 0;
+
+				comment "Config Settings";
+
+					MAZ_RS_configNameEdit = MAZ_RS_rolesConfigEditor ctrlCreate ["RscEdit", 1401];
+					MAZ_RS_configNameEdit ctrlSetText "";
+					MAZ_RS_configNameEdit ctrlSetPosition [0.0875 * safezoneW + safezoneX, 0.313 * safezoneH + safezoneY, 0.134062 * safezoneW, 0.022 * safezoneH];
+					MAZ_RS_configNameEdit ctrlCommit 0;
+
+					MAZ_RS_configSideCombo = MAZ_RS_rolesConfigEditor ctrlCreate ["RscCombo", 2100];
+					MAZ_RS_configSideCombo ctrlSetPosition [0.0875 * safezoneW + safezoneX, 0.368 * safezoneH + safezoneY, 0.134062 * safezoneW, 0.022 * safezoneH];
+					MAZ_RS_configSideCombo lbAdd "BLUFOR";
+					MAZ_RS_configSideCombo lbAdd "OPFOR";
+					MAZ_RS_configSideCombo lbAdd "INDEP";
+					MAZ_RS_configSideCombo ctrlCommit 0;
+
+					MAZ_RS_configMapList = MAZ_RS_rolesConfigEditor ctrlCreate ["RscListbox", 1504];
+					MAZ_RS_configMapList ctrlSetPosition [0.0875 * safezoneW + safezoneX, 0.423 * safezoneH + safezoneY, 0.134062 * safezoneW, 0.143 * safezoneH];
+					MAZ_RS_configMapList ctrlAddEventHandler ["LbDblClick", {
+						params ["_control","_index"];
+						if(_control lbColor _index isEqualTo [1,1,1,1]) then {
+							_control lbSetColor [_index,[0,0.5,0,1]];
+						} else {
+							_control lbSetColor [_index,[1,1,1,1]];
+						};
+					}];
+					{
+						_x params ["_name","_icon"];
+						private _index = MAZ_RS_configMapList lbAdd _name;
+						MAZ_RS_configMapList lbSetPictureRight [_index,_icon];
+					}forEach [
+						["Altis",""],
+						["Stratis",""],
+						["Malden",""],
+						["Tanoa",""],
+						["Enoch",""],
+						["VR",""]
+					];
+					MAZ_RS_configMapList ctrlCommit 0;
+
+					MAZ_RS_configSaveButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2410];
+					MAZ_RS_configSaveButton ctrlSetStructuredText parseText "<t align='center' size='0.95'>Save</t>";
+					MAZ_RS_configSaveButton ctrlSetPosition [0.0875 * safezoneW + safezoneX, 0.577 * safezoneH + safezoneY, 0.134062 * safezoneW, 0.022 * safezoneH];
+					MAZ_RS_configSaveButton ctrlSetFont "PuristaMedium";
+					MAZ_RS_configSaveButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						call MAZ_RS_fnc_saveConfigSettings;
+					}];
+					MAZ_RS_configSaveButton ctrlCommit 0;
+
+					MAZ_RS_configExportButton = MAZ_RS_rolesConfigEditor ctrlCreate ["RscButtonMenu", 2411];
+					MAZ_RS_configExportButton ctrlSetStructuredText parseText "<t size='0.2'>&#160;</t><br/><t align='center' size='0.95'>Export Config</t>";
+					MAZ_RS_configExportButton ctrlSetPosition [0.0875 * safezoneW + safezoneX, 0.632 * safezoneH + safezoneY, 0.134062 * safezoneW, 0.033 * safezoneH];
+					MAZ_RS_configExportButton ctrlSetFont "PuristaMedium";
+					MAZ_RS_configExportButton ctrlAddEventHandler ["ButtonClick", {
+						params ["_control"];
+						call MAZ_RS_fnc_exportConfigToSQF;
+					}];
+					MAZ_RS_configExportButton ctrlCommit 0;
+			};
+			[uiNamespace getVariable "MAZ_RS_configsList"] call MAZ_RS_fnc_refreshConfigs;
+
+			private _rolesList = uiNamespace getVariable "MAZ_RS_rolesListbox";
+			{
+				_x params ["_name","_description","_icon"];
+				private _index = _rolesList lbAdd _name;
+				_rolesList lbSetPictureRight [_index,_icon];
+			}forEach MAZ_RS_rolesDescriptions;
+
+			_rolesList lbAdd "Default Uniform";
+
+			0 = [] spawn {
+				waitUntil {!isNull (uiNamespace getVariable "MAZ_RS_rolesListBox")};
+				private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+				if(count _existingConfigs >= 1) then {
+					[0] call MAZ_RS_fnc_selectConfig;
+				};
+			};
+		};
+
+		MAZ_RS_fnc_selectConfig = {
+			params ["_index"];
+			if !(uiNamespace getVariable "MAZ_RS_configSaved") exitWith {
+				playSound "addItemFailed";
+				systemChat "[ Roles System ] : You haven't saved your current config. If you switch roles or config, changes will not be saved.";
+				uiNamespace setVariable ["MAZ_RS_configSaved",true];
+				uiNamespace setVariable ["MAZ_RS_configLost",true];
+			};
+
+			if (uiNamespace getVariable "MAZ_RS_configLost") then {
+				playSound "addItemFailed";
+				systemChat "[ Roles System ] : Previous changes to role or config lost.";
+			};
+
+			private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+			private _config = _existingConfigs # _index;
+			_config params ["_name","_side","_maps"];
+
+			with uiNamespace do {
+				MAZ_RS_configEditorSelectedConfig = _index;
+				MAZ_RS_configNameEdit ctrlSetText _name;
+				switch (_side) do {
+					case west: {MAZ_RS_configSideCombo lbSetCurSel 0};
+					case east: {MAZ_RS_configSideCombo lbSetCurSel 1};
+					case independent: {MAZ_RS_configSideCombo lbSetCurSel 2};
+				};
+
+				{
+					if(_x in _maps) then {
+						MAZ_RS_configMapList lbSetColor [_forEachIndex,[0.85,0.4,0,1]];
+					} else {
+						MAZ_RS_configMapList lbSetColor [_forEachIndex,[1,1,1,1]];
+					};
+				}forEach ["Altis","Stratis","Malden","Tanoa","Enoch","VR"];
+			};
+			call MAZ_RS_fnc_setRoleVariables;
+			
+			[uiNamespace getVariable "MAZ_RS_configsList"] call MAZ_RS_fnc_refreshConfigs;
+		};
+
+		MAZ_RS_fnc_setRoleVariables = {
+			private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+			private _config = _existingConfigs # (uiNamespace getVariable "MAZ_RS_configEditorSelectedConfig");
+			_config params ["_name","_side","_maps","_default","_roleData"];
+			(_roleData # (uiNamespace getVariable "MAZ_RS_configEditorSelectedRole")) params [["_items",[]],["_weapons",[]],["_magazines",[]],["_backpacks",[]],["_useDefault",false]];
+
+			uiNamespace setVariable ["MAZ_RS_configEditorItems",_items];
+			uiNamespace setVariable ["MAZ_RS_configEditorWeapons",_weapons];
+			uiNamespace setVariable ["MAZ_RS_configEditorMags",_magazines];
+			uiNamespace setVariable ["MAZ_RS_configEditorBags",_backpacks];
+			uiNamespace setVariable ["MAZ_RS_configUseDefault",_useDefault];
+			uiNamespace setVariable ["MAZ_RS_configSaved",true];
+			uiNamespace setVariable ["MAZ_RS_configLost",false];
+
+			private _checkBox = uiNamespace getVariable "MAZ_RS_useDefaultCheckbox";
+			_checkbox cbSetChecked _useDefault;
+
+			call MAZ_RS_fnc_fillRoleList;
+		};
+
+		MAZ_RS_fnc_refreshConfigs = {
+			params ["_listbox"];
+			lbClear _listbox;
+			private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+			if(count _existingConfigs < 1) exitWith {
+				private _index = _listbox lbAdd "No configs...";
+			};
+			if((uiNamespace getVariable "MAZ_RS_configEditorSelectedConfig") >= count _existingConfigs) then {
+				uiNamespace setVariable ["MAZ_RS_configEditorSelectedConfig",0];
+			};
+			{
+				_x params ["_name","_side","_maps"];
+				private _index = _listbox lbAdd (format ["%1",_name]);
+				_listbox lbSetPicture [_index, "\A3\ui_f\data\Map\VehicleIcons\iconMan_ca.paa"];
+				_listbox lbSetPictureColor [_index, [_side] call BIS_fnc_sideColor];
+				if(_index == (uiNamespace getVariable "MAZ_RS_configEditorSelectedConfig")) then {
+					_listbox lbSetColor [_index,[0.85,0.4,0,1]];
+				};
+			}forEach _existingConfigs;
+		};
+
+		MAZ_RS_fnc_createNewConfig = {
+			private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+			private _config = [format ["Custom Config %1",count _existingConfigs],west,["Altis"],[],[]];
+			for "_i" from 0 to (count MAZ_RS_rolesDescriptions) do {
+				(_config # 4) pushBack [];
+			};
+			_existingConfigs pushBack _config;
+			profileNamespace setVariable ["MAZ_RS_CONFIGS",_existingConfigs];
+			saveProfileNamespace;
+			[uiNamespace getVariable "MAZ_RS_configsList"] call MAZ_RS_fnc_refreshConfigs;
+		};
+
+		MAZ_RS_fnc_saveConfig = {
+			params [
+				["_mode","",[""]],
+				["_data",[],[[]]]
+			];
+
+			switch (toLower _mode) do {
+				case "update": {
+					private _configIndex = (uiNamespace getVariable "MAZ_RS_configEditorSelectedConfig");
+					if(_configIndex < 0) exitWith {};
+					private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+					private _config = _existingConfigs # _configIndex;
+
+					private _configName = ctrlText (uiNamespace getVariable "MAZ_RS_configNameEdit");
+					private _configSide = switch (lbCurSel (uiNamespace getVariable "MAZ_RS_configSideCombo")) do {
+						case 0: {west};
+						case 1: {east};
+						case 2: {independent};
+					};
+
+					private _configMaps = [];
+					private _mapList = uiNamespace getVariable "MAZ_RS_configMapList";
+					for "_i" from 0 to (lbSize _mapList - 1) do {
+						if !((_mapList lbColor _i) isEqualTo [1,1,1,1]) then {
+							_configMaps pushBack (_mapList lbText _i);
+						};
+					};
+
+					private _defaultUniform = [];
+					private _roleData = [];
+					{
+						_roleData pushBack (uiNamespace getVariable _x);
+					}forEach ["MAZ_RS_configEditorItems","MAZ_RS_configEditorWeapons","MAZ_RS_configEditorMags","MAZ_RS_configEditorBags","MAZ_RS_configUseDefault"];
+
+					_config set [0, _configName];
+					_config set [1, _configSide];
+					_config set [2, _configMaps];
+					_config set [3, _defaultUniform];
+					(_config # 4) set [uiNamespace getVariable "MAZ_RS_configEditorSelectedRole", _roleData];
+					_existingConfigs set [_configIndex,_config];
+					profileNamespace setVariable ["MAZ_RS_CONFIGS",_existingConfigs];
+					saveProfileNamespace;
+					playSound "addItemOK";
+					uiNamespace setVariable ["MAZ_RS_configSaved",true];
+				};
+				case "delete": {
+					_data params ["_configIndex"];
+
+					private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+					_existingConfigs deleteAt _configIndex;
+					profileNamespace setVariable ["MAZ_RS_CONFIGS",_existingConfigs];
+					saveProfileNamespace;
+					[uiNamespace getVariable "MAZ_RS_configsList"] call MAZ_RS_fnc_refreshConfigs;
+					playSound "addItemOK";
+				};
+			};
+		};
+
+		MAZ_RS_fnc_getAllWeapons = {
+			private _cfgs = (configFile >> "CfgWeapons") call BIS_fnc_getCfgSubClasses;
+			private _weapons = [];
+			{
+				if !(_x isKindOf ["Rifle", configFile >> "CfgWeapons"] || _x isKindOf ["MGun", configFile >> "CfgWeapons"] || _x isKindOf ["Pistol", configFile >> "CfgWeapons"] || _x isKindOf ["Launcher", configFile >> "CfgWeapons"] || _x isKindOf ["Binocular", configFile >> "CfgWeapons"]) then {continue};
+				if(getText (configFile >> "CfgWeapons" >> _x >> "model") == "") then {continue};
+				private _cfg = (configFile >> "CfgWeapons" >> _x);
+				private _parents = [_cfg, true] call BIS_fnc_returnParents;
+				private _parent = _parents select 1;
+				if (
+					(_parent isKindOf ["Rifle", configFile >> "CfgWeapons"] || _parent isKindOf ["MGun", configFile >> "CfgWeapons"] || _parent isKindOf ["Pistol", configFile >> "CfgWeapons"] || _parent isKindOf ["Launcher", configFile >> "CfgWeapons"]) &&
+					(getNumber (configFile >> "CfgWeapons" >> _parent >> "scope") >= 2)
+				) then {
+					_x = _parent;
+				};
+				private _scope = getNumber (_cfg >> "Scope");
+				if(_scope >= 2) then {
+					_weapons pushBackUnique _x;
+				};
+			}forEach _cfgs;
+			_weapons
+		};
+
+		MAZ_RS_fnc_getAllItems = {
+			private _cfgs = (configFile >> "CfgWeapons") call BIS_fnc_getCfgSubClasses;
+			private _items = [];
+			{
+				if !(_x isKindOf ["ItemCore", configFile >> "CfgWeapons"] || _x isKindOf ["DetectorCore", configFile >> "CfgWeapons"]) then {continue};
+				if(getText (configFile >> "CfgWeapons" >> _x >> "model") == "") then {continue};
+				private _cfg = (configFile >> "CfgWeapons" >> _x);
+				private _scope = getNumber (_cfg >> "Scope");
+				if(_scope >= 2) then {
+					_items pushBackUnique _x;
+				};
+			}forEach _cfgs;
+			_items = _items + (call MAZ_RS_fnc_getAllGoggles);
+			_items
+		};
+
+		MAZ_RS_fnc_getAllGoggles = {
+			private _cfgs = (configFile >> "CfgGlasses") call BIS_fnc_getCfgSubClasses;
+			private _items = [];
+			{
+				if !(_x isKindOf ["None", configFile >> "CfgGlasses"]) then {continue};
+				if(getText (configFile >> "CfgGlasses" >> _x >> "model") == "") then {continue};
+				private _cfg = (configFile >> "CfgGlasses" >> _x);
+				private _scope = getNumber (_cfg >> "Scope");
+				if(_scope >= 2) then {
+					_items pushBackUnique _x;
+				};
+			}forEach _cfgs;
+			_items
+		};
+
+		MAZ_RS_fnc_getAllBackpacks = {
+			private _cfgs = (configFile >> "CfgVehicles") call BIS_fnc_getCfgSubClasses;
+			private _backpacks = [];
+			{
+				if !(_x isKindOf ["Bag_Base", configFile >> "CfgVehicles"]) then {continue};
+				if(getText (configFile >> "CfgVehicles" >> _x >> "model") == "") then {continue};
+				private _cfg = (configFile >> "CfgVehicles" >> _x);
+				private _scope = getNumber (_cfg >> "Scope");
+				if(_scope >= 2) then {
+					_backpacks pushBackUnique _x;
+				};
+			}forEach _cfgs;
+			_backpacks
+		};
+
+		MAZ_RS_fnc_getAllMagazines = {
+			private _cfgs = (configFile >> "CfgMagazines") call BIS_fnc_getCfgSubClasses;
+			private _mags = [];
+			{
+				if !(_x isKindOf ["CA_Magazine", configFile >> "CfgMagazines"]) then {continue};
+				if(getText (configFile >> "CfgMagazines" >> _x >> "model") == "") then {continue};
+				private _cfg = (configFile >> "CfgMagazines" >> _x);
+				private _scope = getNumber (_cfg >> "Scope");
+				private _type = getNumber (_cfg >> "type");
+				private _value = getNumber (_cfg >> "value");
+				if(_scope >= 2 && (_type == 256 || _type == 512)) then {
+					_mags pushBackUnique _x;
+				};
+			}forEach _cfgs;
+			_mags
+		};
+
+		MAZ_RS_fnc_getAvailableItems = {
+			params [
+				["_mode","item",[""]],
+				["_selectedItems",[],[[]]],
+				["_selectedWeapons",[],[[]]]
+			];
+
+			private _list = uiNamespace getVariable "MAZ_RS_availableItemsList";
+			lbClear _list;
+
+			switch (_mode) do {
+				case "item": {
+					private _items = call MAZ_RS_fnc_getAllItems;
+					_items = [_items,[],{getText (configFile >> "CfgWeapons" >> _x >> "displayName")}, "ASCEND"] call BIS_fnc_sortBy;
+					_items = [_items,[],{
+						switch ((_x call BIS_fnc_itemType) # 1) do {
+							case "Binocular";
+							case "Compass";
+							case "FirstAidKit";
+							case "GPS";
+							case "LaserDesignator";
+							case "Map";
+							case "Medikit";
+							case "MineDetector";
+							case "NVGoggles";
+							case "Radio";
+							case "Toolkit";
+							case "UAVTerminal";
+							case "Watch": {0};
+
+							case "Headgear": {1};
+							case "Uniform": {2};
+							case "Vest": {3};
+							case "Glasses": {4};
+
+							case "AccessoryMuzzle";
+							case "AccessoryPointer";
+							case "AccessorySights";
+							case "AccessoryBipod": {5};
+							default {6};
+						};
+					}, "ASCEND"] call BIS_fnc_sortBy;
+					{
+						if !(_x in _selectedItems) then {
+							[_list,_x,"item"] call MAZ_RS_fnc_addItemToList;
+						};
+					}forEach _items;
+				};
+				case "weapon": {
+					private _weapons = call MAZ_RS_fnc_getAllWeapons;
+					_weapons = [_weapons,[],{getText (configFile >> "CfgWeapons" >> _x >> "displayName")}, "ASCEND"] call BIS_fnc_sortBy;
+					_weapons = [_weapons,[],{
+						switch ((_x call BIS_fnc_itemType) # 1) do {
+							case "NVGoggles": {0};
+							case "LaserDesignator";
+							case "Binocular": {1};
+
+							case "Rifle";
+							case "Shotgun";
+							case "SniperRifle";
+							case "AssaultRifle";
+							case "GrenadeLauncher";
+							case "MachineGun";
+							case "MissileLauncher";
+							case "RocketLauncher";
+							case "BombLauncher";
+							case "Handgun";
+							case "SubmachineGun": {2};
+							default {6};
+						};
+					}, "ASCEND"] call BIS_fnc_sortBy;
+					{
+						if !(_x in _selectedItems) then {
+							[_list,_x,"weapon"] call MAZ_RS_fnc_addItemToList;
+						};
+					}forEach _weapons;
+				};
+				case "backpack": {
+					private _bags = call MAZ_RS_fnc_getAllBackpacks;
+					_bags = [_bags,[],{getText (configFile >> "CfgVehicles" >> _x >> "displayName")}, "ASCEND"] call BIS_fnc_sortBy;
+					{
+						if !(_x in _selectedItems) then {
+							[_list,_x,"backpack"] call MAZ_RS_fnc_addItemToList;
+						};
+					}forEach _bags;
+				};
+				case "magazine": {
+					private _mags = call MAZ_RS_fnc_getAllMagazines;
+					_mags = [_mags,[],{getText (configFile >> "CfgMagazines" >> _x >> "displayName")}, "ASCEND"] call BIS_fnc_sortBy;
+					{
+						if !(_x in _selectedItems) then {
+							[_list,_x,"magazine"] call MAZ_RS_fnc_addItemToList;
+						};
+					}forEach _mags;
+				};
+			};
+		};
+
+		MAZ_RS_fnc_fillRoleList = {
+			private _index = uiNamespace getVariable "MAZ_RS_configEditorSelectedConfig";
+			private _roleIndex = uiNamespace getVariable "MAZ_RS_configEditorSelectedRole";
+
+			private _list = uiNamespace getVariable "MAZ_RS_selectedItemsList";
+			lbClear _list;
+
+			private _mode = uiNamespace getVariable "MAZ_RS_configEditorItemType";
+			private _items = uiNamespace getVariable "MAZ_RS_configEditorItems";
+			private _weapons = uiNamespace getVariable "MAZ_RS_configEditorWeapons";
+			private _mags = uiNamespace getVariable "MAZ_RS_configEditorMags";
+			private _backpacks = uiNamespace getVariable "MAZ_RS_configEditorBags";
+			switch (_mode) do {
+				case "item": {
+					{
+						[_list,_x,"item"] call MAZ_RS_fnc_addItemToList;
+					}forEach _items;
+					[_mode,_items] call MAZ_RS_fnc_getAvailableItems;
+				};
+				case "weapon": {
+					{
+						[_list,_x,"weapon"] call MAZ_RS_fnc_addItemToList;
+					}forEach _weapons;
+					[_mode,_weapons] call MAZ_RS_fnc_getAvailableItems;
+				};
+				case "backpack": {
+					{
+						[_list,_x,"backpack"] call MAZ_RS_fnc_addItemToList;
+					}forEach _backpacks;
+					[_mode,_backpacks] call MAZ_RS_fnc_getAvailableItems;
+				};
+				case "magazine": {
+					{
+						[_list,_x,"magazine"] call MAZ_RS_fnc_addItemToList;
+					}forEach _mags;
+					[_mode,_mags] call MAZ_RS_fnc_getAvailableItems;
+				};
+			};
+			_list lbSetCurSel 0;
+		};
+
+		MAZ_RS_fnc_resetListsToTop = {
+			private _selectedItems = uiNamespace getVariable "MAZ_RS_selectedItemsList";
+			private _availableItems = uiNamespace getVariable "MAZ_RS_availableItemsList";
+			_selectedItems lbSetCurSel 0;
+			_availableItems lbSetCurSel 0;
+		};
+
+		MAZ_RS_fnc_addItemToList = {
+			params ["_list","_classname","_mode"];
+			switch (_mode) do {
+				case "weapon";
+				case "item": {
+					private _cfg = (configFile >> "CfgWeapons" >> _classname);
+					if((_classname call BIS_fnc_itemType) # 1 == "Glasses") then {
+						_cfg = (configFile >> "CfgGlasses" >> _classname);
+					};
+					private _displayName = getText (_cfg >> "DisplayName");
+					private _icon = getText (_cfg >> "picture");
+					private _index = _list lbAdd _displayName;
+					_list lbSetPictureRight [_index,_icon];
+					_list lbSetData [_index,_classname];
+					_list lbSetTooltip [_index,_displayName];
+				};
+				case "magazine": {
+					private _cfg = (configFile >> "CfgMagazines" >> _classname);
+					private _displayName = getText (_cfg >> "DisplayName");
+					private _icon = getText (_cfg >> "picture");
+					private _index = _list lbAdd _displayName;
+					_list lbSetPictureRight [_index,_icon];
+					_list lbSetData [_index,_classname];
+					_list lbSetTooltip [_index,_displayName];
+				};
+				case "backpack": {
+					private _cfg = (configFile >> "CfgVehicles" >> _classname);
+					private _displayName = getText (_cfg >> "DisplayName");
+					private _icon = getText (_cfg >> "picture");
+					private _index = _list lbAdd _displayName;
+					_list lbSetPictureRight [_index,_icon];
+					_list lbSetData [_index,_classname];
+					_list lbSetTooltip [_index,_displayName];
+				};
+			};
+		};
+
+		MAZ_RS_fnc_addToSelection = {
+			private _selected = uiNamespace getVariable "MAZ_RS_selectedItemsList";
+			private _available = uiNamespace getVariable "MAZ_RS_availableItemsList";
+
+			private _index = lbCurSel _available;
+			private _classname = _available lbData _index;
+
+			switch (uiNamespace getVariable "MAZ_RS_configEditorItemType") do {
+				case "item": {
+					private _list = uiNamespace getVariable "MAZ_RS_configEditorItems";
+					_list pushBack _classname;
+					uiNamespace setVariable ["MAZ_RS_configEditorItems",_list];
+				};
+				case "weapon": {
+					private _list = uiNamespace getVariable "MAZ_RS_configEditorWeapons";
+					_list pushBack _classname;
+					uiNamespace setVariable ["MAZ_RS_configEditorWeapons",_list];
+					comment "TODO : Add toggle";
+					private _mags = uiNamespace getVariable "MAZ_RS_configEditorMags";
+					{
+						_mags pushBackUnique _x;
+					}forEach ([_classname] call BIS_fnc_compatibleMagazines);
+					uiNamespace setVariable ["MAZ_RS_configEditorMags",_mags];
+				};
+				case "backpack": {
+					private _list = uiNamespace getVariable "MAZ_RS_configEditorBags";
+					_list pushBack _classname;
+					uiNamespace setVariable ["MAZ_RS_configEditorBags",_list];
+				};
+				case "magazine": {
+					private _list = uiNamespace getVariable "MAZ_RS_configEditorMags";
+					_list pushBack _classname;
+					uiNamespace setVariable ["MAZ_RS_configEditorMags",_list];
+				};
+			};
+			uiNamespace setVariable ["MAZ_RS_configSaved",false];
+			call MAZ_RS_fnc_fillRoleList;
+		};
+
+		MAZ_RS_fnc_removeFromSelection = {
+			private _selected = uiNamespace getVariable "MAZ_RS_selectedItemsList";
+			private _available = uiNamespace getVariable "MAZ_RS_availableItemsList";
+
+			private _index = lbCurSel _selected;
+			private _classname = _selected lbData _index;
+
+			switch (uiNamespace getVariable "MAZ_RS_configEditorItemType") do {
+				case "item": {
+					with uiNamespace do {
+						MAZ_RS_configEditorItems deleteAt (MAZ_RS_configEditorItems find _classname);
+					};
+				};
+				case "weapon": {
+					with uiNamespace do {
+						MAZ_RS_configEditorWeapons deleteAt (MAZ_RS_configEditorWeapons find _classname);
+					};
+				};
+				case "backpack": {
+					with uiNamespace do {
+						MAZ_RS_configEditorBags deleteAt (MAZ_RS_configEditorBags find _classname);
+					};
+				};
+				case "magazine": {
+					with uiNamespace do {
+						MAZ_RS_configEditorMags deleteAt (MAZ_RS_configEditorMags find _classname);
+					};
+				};
+			};
+			uiNamespace setVariable ["MAZ_RS_configSaved",false];
+			call MAZ_RS_fnc_fillRoleList;
+		};
+
+		MAZ_RS_fnc_saveConfigSettings = {
+			private _configIndex = (uiNamespace getVariable "MAZ_RS_configEditorSelectedConfig");
+			private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+			private _config = _existingConfigs # _configIndex;
+
+			private _configName = ctrlText (uiNamespace getVariable "MAZ_RS_configNameEdit");
+			private _configSide = switch (lbCurSel (uiNamespace getVariable "MAZ_RS_configSideCombo")) do {
+				case 0: {west};
+				case 1: {east};
+				case 2: {independent};
+			};
+
+			private _configMaps = [];
+			private _mapList = uiNamespace getVariable "MAZ_RS_configMapList";
+			for "_i" from 0 to (lbSize _mapList - 1) do {
+				if !((_mapList lbColor _i) isEqualTo [1,1,1,1]) then {
+					_configMaps pushBack (_mapList lbText _i);
+				};
+			};
+
+			_config set [0, _configName];
+			_config set [1, _configSide];
+			_config set [2, _configMaps];
+			_existingConfigs set [_configIndex,_config];
+			profileNamespace setVariable ["MAZ_RS_CONFIGS",_existingConfigs];
+			saveProfileNamespace;
+
+			[uiNamespace getVariable "MAZ_RS_configsList"] call MAZ_RS_fnc_refreshConfigs;
+			playSound "addItemOK";
+		};
+
+		MAZ_RS_fnc_filterWeaponsForExport = {
+			params ["_weapons"];
+			private _out = [
+				[],
+				[],
+				[]
+			];
+			{
+				switch ((_x call BIS_fnc_itemType) # 1) do {
+					case "Rifle";
+					case "Shotgun";
+					case "SniperRifle";
+					case "SubmachineGun";
+					case "MachineGun";
+					case "AssaultRifle": {
+						(_out # 0) pushBackUnique _x;
+					};
+					case "Launcher";
+					case "MissileLauncher";
+					case "RocketLauncher": {
+						(_out # 1) pushBackUnique _x;
+					};
+					case "Handgun": {
+						(_out # 2) pushBackUnique _x;
+					};
+					default {};
+				};
+			}forEach _weapons;
+			_out;
+		};
+
+		MAZ_RS_fnc_filterItemsForExport = {
+			params ["_items"];
+			private _out = [
+				[],
+				[],
+				[],
+				[],
+				[],
+				[]
+			];
+			{
+				switch ((_x call BIS_fnc_itemType) # 1) do {
+					case "AccessoryMuzzle";
+					case "AccessoryPointer";
+					case "AccessorySights";
+					case "AccessoryBipod": {
+						(_out # 0) pushBackUnique _x;
+					};
+					case "Uniform": {
+						(_out # 1) pushBackUnique _x;
+					};
+					case "Vest": {
+						(_out # 2) pushBackUnique _x;
+					};
+					case "Headgear": {
+						(_out # 3) pushBackUnique _x;
+					};
+					case "Glasses": {
+						(_out # 4) pushBackUnique _x;
+					};
+					case "Binocular";
+					case "Compass";
+					case "FirstAidKit";
+					case "Medikit";
+					case "GPS";
+					case "LaserDesignator";
+					case "MineDetector";
+					case "NVGoggles";
+					case "Radio";
+					case "Toolkit";
+					case "Watch";
+					case "Map";
+					case "UAVTerminal": {
+						(_out # 5) pushBackUnique _x;
+					};
+					default {};
+				};
+			}forEach _items;
+			_out;
+		};
+
+		MAZ_RS_fnc_filterMagsByWeaponType = {
+			params ["_mags","_primary","_launcher","_handgun"];
+			_mags = _mags apply {toLower _x};
+			private _primaryMags = [];
+			{
+				{
+					if(toLower _x in _mags) then {
+						_primaryMags pushBackUnique _x;
+					};
+				}forEach (_x call BIS_fnc_compatibleMagazines);
+			}forEach _primary;
+
+			private _launcherMags = [];
+			{
+				{
+					if(toLower _x in _mags) then {
+						_launcherMags pushBackUnique _x;
+					};
+				}forEach (_x call BIS_fnc_compatibleMagazines);
+			}forEach _launcher;
+
+			private _handgunMags = [];
+			{
+				{
+					if(toLower _x in _mags) then {
+						_handgunMags pushBackUnique _x;
+					};
+				}forEach (_x call BIS_fnc_compatibleMagazines);
+			}forEach _handgun;
+
+			{
+				if(_x in _primaryMags) then {
+					(_out # 0) pushBack _x;
+				};
+				if(_x in _launcherMags) then {
+					(_out # 1) pushBack _x;
+				};
+				if(_x in _handgunMags) then {
+					(_out # 2) pushBack _x;
+				};
+			}forEach _mags;
+			[_primaryMags,_launcherMags,_handgunMags];
+		};
+
+		MAZ_RS_fnc_exportConfigToSQF = {
+			private _configIndex = (uiNamespace getVariable "MAZ_RS_configEditorSelectedConfig");
+			private _existingConfigs = profileNamespace getVariable ["MAZ_RS_CONFIGS",[]];
+			private _config = _existingConfigs # _configIndex;
+			_config params ["_name","_side","_maps","_default","_rolesDirectAccess"];
+
+			private _defaultUniform = _rolesDirectAccess # (count _rolesDirectAccess - 1);
+			_defaultUniform params [["_uniforms",[]],"","",["_backpacks",[]]];
+			private _roleData = [];
+			{
+				_roleData pushBack _x;
+			}forEach _rolesDirectAccess;
+			_roleData deleteAt (count _roleData - 1);
+
+			_sideStr = switch (_side) do {
+				case west: {"west"};
+				case east: {"east"};
+				case independent: {"independent"};
+			};
+
+			systemTime params ["_year","_month","_day","_hour","_minute"];
+			private _br = toString [13,10];
+			private _tab = toString [9];
+			private _exportString = "/*" + _br + _tab + "Custom Config Exported from Roles System Config Editor - " + _name + _br;
+			_exportString = _exportString + _tab + "Exported on: " + (str _day) + "-" + (str _month) + "-" + (str _year) + " " + (str _hour) + ":" + (str _minute) + _br + "*/" + _br + _br;
+			
+			{
+				private _map = _x;
+				_exportString = _exportString + (format ['//%1 Default Uniform%2[%2%3%4,%2%3"%5",%2%3%6,%2%3[],%2%3%7,%2%3[],%2%3[]%2]call MAZ_RS_fnc_createNewDefaultSideUniform;%2%2',_name,_br,_tab,_sideStr,_map,(str _uniforms), (str _backpacks)]);
+				{
+					_x params [["_items",[]],["_weapons",[]],["_mags",[]],["_backpacks",[]],["_useDefault",false]];
+					
+					([_weapons] call MAZ_RS_fnc_filterWeaponsForExport) params ["_primary","_launcher","_pistol"];
+					([_items] call MAZ_RS_fnc_filterItemsForExport) params ["_attachments","_uniforms","_vests","_helmets","_goggles","_extra"];
+					([_mags,_primary,_launcher,_pistol] call MAZ_RS_fnc_filterMagsByWeaponType) params ["_primaryMags", "_launcherMags", "_pistolMags"];
+
+					private _role = MAZ_RS_rolesList select _forEachIndex;
+					_exportString = _exportString + (format ['//%1 %4 %5%2[%2%3%6,%2%3"%7",%2%3"%5",%2%3[%2%3%3[%2%3%3%3%8,%2%3%3%3%9%2%3%3],%2%3%3[%2%3%3%3',_name,_br,_tab,_name,_role,_sideStr,_map,(str _primary),(str _primaryMags)]);
+					_exportString = _exportString + (format ['%1,%2%3%3%3%4%2%3%3],%2%3%3[%2%3%3%3%5,%2%3%3%3%6%2%3%3],%2%3%3%7%2%3],%2',(str _launcher),_br,_tab,(str _launcherMags),(str _pistol),(str _pistolMags),(str _attachments)]);
+					_exportString = _exportString + (format ['%3%1,%2%3%4,%2%3%5,%2%3%6,%2%3%7,%2%3%8,%2%3%9%2] call MAZ_RS_fnc_createNewEquipmentForRole;',(str _uniforms),_br,_tab,(str _vests),(str _backpacks),(str _helmets),(str _goggles),(str _extra),(str _useDefault)]);
+					if(_forEachIndex < (count _roleData - 1)) then {
+						_exportString = _exportString + (format ["%1%1",_br]);
+					};
+				}forEach _roleData;
+			}forEach _maps;
+
+			if(isNil "_exportString") exitWith {
+				playSound "addItemFailed";
+				systemChat "[ Roles System ] : Failed to export data.";
+			};
+			playSound "addItemOk";
+			systemChat "[ Roles System ] : SQF code copied to clipboard. This feature is only available in Singleplayer.";
+			copyToClipboard _exportString;
+		};
 
 	MAZ_RS_fnc_isNightTime = {
 		([date] call BIS_fnc_sunriseSunsetTime) params ["_sunrise","_sunset"];
@@ -3065,7 +4226,7 @@ private _value = (str {
 		};
 
 		_var = ["B_Bergen_tna_F","B_Bergen_dgtl_F","B_Bergen_hex_F","B_Bergen_mcamo_F"] apply {toLower _x};
-		if((toLower (backpack player)) in _var || backpack player isKindOf "Weapon_Bag_Base") then {
+		if((toLower (backpack player)) in _var || (backpack player isKindOf "Weapon_Bag_Base" && !("UAV" in (backpack player)))) then {
 			removeBackpackGlobal player;
 			_wereItemsRemoved = true;
 		};
@@ -4819,12 +5980,12 @@ private _value = (str {
 				player removeWeapon _item;
 			};
 		}];
-		if (!isNil 'MAZ_RS_SEH_ArsenalClosed_Load') then {
+		comment 'if (!isNil "MAZ_RS_SEH_ArsenalClosed_Load") then {
 			[ missionNamespace, "arsenalOpened", MAZ_RS_SEH_ArsenalClosed_Load] call BIS_fnc_removeScriptedEventHandler; 
 		};
 		MAZ_RS_SEH_ArsenalClosed_Load = [ missionNamespace, "arsenalOpened", {
 			[] spawn MAZ_RS_fnc_disableArsenalLoadExec;
-		}] call BIS_fnc_addScriptedEventHandler;
+		}] call BIS_fnc_addScriptedEventHandler';
 		if (!isNil 'MAZ_RS_SEH_ArsenalClosed_CheckGear') then {
 			[ missionNamespace, "arsenalClosed", MAZ_RS_SEH_ArsenalClosed_CheckGear] call BIS_fnc_removeScriptedEventHandler; 
 		};
@@ -5347,9 +6508,13 @@ missionNamespace setVariable [_varName,_value,true];
 
 comment "
 Changes:
-	- Fixed issue where players other than Engineers could equip mines.
-	- Fixed issue where Light-AT could use HEAT 75 rockets despite it not being permitted.
+	- Added Config Editor, open with: [] spawn MAZ_RS_fnc_openRolesEditor;
+	- Fixed issue where players couldn't pickup UAV bags
+	- Changed the arsenal limitations. Players can now load loadouts, items will be filtered out that aren't allowed.
 
 	TODO: 
-	 - 
+	 - LAT gets AA (?).
+	 - Let players pickup AT in combat.
+	 - Config Editor removes too many duplicates, specifically MAAWS, Titan, Mk-1 EMR.
+	 - Fix randomized loadout to not remove items that are ok for use.
 ";
